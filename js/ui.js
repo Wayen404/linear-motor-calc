@@ -28,8 +28,12 @@ const UI = {
       });
       el.addEventListener('input', () => {
         // 用户在运动参数输入框中打字时，清除之前推导字段的值
+        // 如果当前编辑的是推导字段（如 Vmax/a），不清除它自己，只清其他
+        // 如果当前编辑的是非推导字段（如 S/t_run），清除所有推导字段
         if (el.classList.contains('motion-param') && this._lastDerivedKeys.length > 0) {
-          this.clearDerivedValues();
+          const field = this.motionFields.find(f => f.id === el.id);
+          const isDerivedField = field && this._lastDerivedKeys.includes(field.key);
+          this.clearDerivedValues(isDerivedField ? field.key : undefined);
         }
       });
     });
@@ -48,11 +52,12 @@ const UI = {
     });
   },
 
-  /** 清除之前推导字段的值（用户在运动参数输入框中打字时触发） */
-  clearDerivedValues() {
+  /** 清除之前推导字段的值（用户在运动参数输入框中打字时触发）
+   *  @param {string} [skipKey] - 不清除的字段 key（当前正在编辑的字段） */
+  clearDerivedValues(skipKey) {
     if (this._lastDerivedKeys.length === 0) return;
     this.motionFields.forEach(({ id, key }) => {
-      if (this._lastDerivedKeys.includes(key)) {
+      if (this._lastDerivedKeys.includes(key) && key !== skipKey) {
         document.getElementById(id).value = '';
       }
     });
