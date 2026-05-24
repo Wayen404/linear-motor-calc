@@ -51,6 +51,38 @@ const Calculator = {
     'mai1-68-240': { name: 'MAI1-68-240', coilMass: 0.84, Kf: 56, Icont: 2.5, Ipeak: 12, Fmag: 0, Fcont: 140, Fpeak: 672 },
     'mai1-68-300': { name: 'MAI1-68-300', coilMass: 1.05, Kf: 70, Icont: 2.5, Ipeak: 12, Fmag: 0, Fcont: 175, Fpeak: 840 },
 
+    // ---- MAI1-93 ----
+    'mai1-93-60':    { name: 'MAI1-93-60',    coilMass: 0.3, Kf: 26, Icont: 2.5, Ipeak: 12, Fmag: 0, Fcont: 65, Fpeak: 312 },
+    'mai1-93-120':   { name: 'MAI1-93-120',   coilMass: 0.6, Kf: 52, Icont: 2.5, Ipeak: 12, Fmag: 0, Fcont: 130, Fpeak: 624 },
+    'mai1-93-180':   { name: 'MAI1-93-180',   coilMass: 0.9, Kf: 81.6, Icont: 2.5, Ipeak: 12, Fmag: 0, Fcont: 203, Fpeak: 979 },
+    'mai1-93-240-y1':{ name: 'MAI1-93-240 (Y1)', coilMass: 1.2, Kf: 105.6, Icont: 2.5, Ipeak: 12, Fmag: 0, Fcont: 264, Fpeak: 1267 },
+    'mai1-93-240-y2':{ name: 'MAI1-93-240 (Y2)', coilMass: 1.2, Kf: 52.8, Icont: 5, Ipeak: 24, Fmag: 0, Fcont: 264, Fpeak: 1267 },
+    'mai1-93-300-y1':{ name: 'MAI1-93-300 (Y1)', coilMass: 1.5, Kf: 127, Icont: 2.5, Ipeak: 12, Fmag: 0, Fcont: 317, Fpeak: 1524 },
+    'mai1-93-300-y2':{ name: 'MAI1-93-300 (Y2)', coilMass: 1.5, Kf: 63.5, Icont: 5, Ipeak: 24, Fmag: 0, Fcont: 317, Fpeak: 1524 },
+    'mai1-93-360-y1':{ name: 'MAI1-93-360 (Y1)', coilMass: 1.8, Kf: 153, Icont: 2.5, Ipeak: 12, Fmag: 0, Fcont: 382, Fpeak: 1836 },
+    'mai1-93-360-y2':{ name: 'MAI1-93-360 (Y2)', coilMass: 1.8, Kf: 76.5, Icont: 5, Ipeak: 24, Fmag: 0, Fcont: 382, Fpeak: 1836 },
+
+    // ---- MAI1-122 ----
+    'mai1-122-85':    { name: 'MAI1-122-85',    coilMass: 0.88, Kf: 44, Icont: 2.5, Ipeak: 15, Fmag: 0, Fcont: 110, Fpeak: 660 },
+    'mai1-122-169':   { name: 'MAI1-122-169',   coilMass: 1.9, Kf: 88, Icont: 2.5, Ipeak: 15, Fmag: 0, Fcont: 220, Fpeak: 1320 },
+    'mai1-122-253-y1':{ name: 'MAI1-122-253 (Y1)', coilMass: 2.7, Kf: 132, Icont: 2.5, Ipeak: 15, Fmag: 0, Fcont: 330, Fpeak: 1980 },
+    'mai1-122-253-y2':{ name: 'MAI1-122-253 (Y2)', coilMass: 2.7, Kf: 66, Icont: 5, Ipeak: 30, Fmag: 0, Fcont: 330, Fpeak: 1980 },
+    'mai1-122-337-y1':{ name: 'MAI1-122-337 (Y1)', coilMass: 3.6, Kf: 176, Icont: 2.5, Ipeak: 15, Fmag: 0, Fcont: 440, Fpeak: 2640 },
+    'mai1-122-337-y2':{ name: 'MAI1-122-337 (Y2)', coilMass: 3.6, Kf: 88, Icont: 5, Ipeak: 30, Fmag: 0, Fcont: 440, Fpeak: 2640 },
+    'mai1-122-421-y1':{ name: 'MAI1-122-421 (Y1)', coilMass: 4.5, Kf: 220, Icont: 2.5, Ipeak: 15, Fmag: 0, Fcont: 550, Fpeak: 3300 },
+    'mai1-122-421-y2':{ name: 'MAI1-122-421 (Y2)', coilMass: 4.5, Kf: 110, Icont: 5, Ipeak: 30, Fmag: 0, Fcont: 550, Fpeak: 3300 },
+
+    // ---- MAI1-155 ----
+    'mai1-155-169':    { name: 'MAI1-155-169',    coilMass: 1.8, Kf: 108, Icont: 2.8, Ipeak: 18, Fmag: 0, Fcont: 300, Fpeak: 1800 },
+    'mai1-155-253-y1': { name: 'MAI1-155-253 (Y1)', coilMass: 2.7, Kf: 162, Icont: 2.8, Ipeak: 18, Fmag: 0, Fcont: 450, Fpeak: 2700 },
+    'mai1-155-253-y2': { name: 'MAI1-155-253 (Y2)', coilMass: 2.7, Kf: 81, Icont: 5.6, Ipeak: 36, Fmag: 0, Fcont: 450, Fpeak: 2700 },
+    'mai1-155-337-y1': { name: 'MAI1-155-337 (Y1)', coilMass: 3.5, Kf: 216, Icont: 2.8, Ipeak: 18, Fmag: 0, Fcont: 600, Fpeak: 3600 },
+    'mai1-155-337-y2': { name: 'MAI1-155-337 (Y2)', coilMass: 3.5, Kf: 108, Icont: 5.6, Ipeak: 36, Fmag: 0, Fcont: 600, Fpeak: 3600 },
+    'mai1-155-421-y1': { name: 'MAI1-155-421 (Y1)', coilMass: 4.5, Kf: 260, Icont: 2.8, Ipeak: 18, Fmag: 0, Fcont: 750, Fpeak: 4500 },
+    'mai1-155-421-y2': { name: 'MAI1-155-421 (Y2)', coilMass: 4.5, Kf: 130, Icont: 5.6, Ipeak: 36, Fmag: 0, Fcont: 750, Fpeak: 4500 },
+    'mai1-155-505-y2': { name: 'MAI1-155-505 (Y2)', coilMass: 5.3, Kf: 156, Icont: 5.6, Ipeak: 36, Fmag: 0, Fcont: 900, Fpeak: 5400 },
+    'mai1-155-505-y3': { name: 'MAI1-155-505 (Y3)', coilMass: 5.3, Kf: 104, Icont: 8.4, Ipeak: 54, Fmag: 0, Fcont: 900, Fpeak: 5400 },
+
     // ============================================================
     // LMC 系列 — 直线模组  (移动质量含滑台板、动子、滑块)
     // ============================================================

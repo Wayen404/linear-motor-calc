@@ -38,6 +38,11 @@ const UI = {
       });
     });
     document.getElementById('motorSelect').addEventListener('change', (e) => this.onMotorChange(e));
+
+    // 禁止滚轮更改数字输入值
+    document.querySelectorAll('.param-input[type="number"]').forEach(el => {
+      el.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+    });
   },
 
   /** 清除所有推导样式 */
