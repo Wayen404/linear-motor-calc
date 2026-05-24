@@ -156,6 +156,7 @@ const UI = {
       primaryMass: g('primaryMass'),
       frictionCoeff: g('frictionCoeff'),
       inclineAngle: g('inclineAngle'),
+      externalForce: g('externalForce'),
       magAttraction: g('magAttraction'),
       forceConstant: g('forceConstant'),
       contCurrent: g('contCurrent'),
@@ -172,6 +173,18 @@ const UI = {
 
   calculate() {
     const raw = this.getParams();
+
+    // 验证必填项
+    if (document.getElementById('loadMass').value === '' || raw.loadMass <= 0) {
+      alert('请填写负载质量 M');
+      document.getElementById('loadMass').focus();
+      return;
+    }
+    if (document.getElementById('frictionCoeff').value === '') {
+      alert('请填写摩擦系数 μ');
+      document.getElementById('frictionCoeff').focus();
+      return;
+    }
 
     // 第1步：推导缺失的运动参数
     const derived = Calculator.deriveMissingParam(raw._raw);
@@ -201,6 +214,7 @@ const UI = {
       primaryMass: raw.primaryMass,
       frictionCoeff: raw.frictionCoeff,
       inclineAngle: raw.inclineAngle,
+      externalForce: raw.externalForce,
       magAttraction: raw.magAttraction,
       forceConstant: raw.forceConstant,
       contCurrent: raw.contCurrent,

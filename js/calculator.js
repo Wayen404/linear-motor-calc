@@ -226,22 +226,23 @@ const Calculator = {
    * @param {number} mu - 摩擦系数
    * @param {number} thetaDeg - 倾斜角 (°)
    * @param {number} magAttraction - 磁吸力 (N)
+   * @param {number} externalForce - 外部力 (N)
    * @returns {{
    *   Fa: number, Fc: number, Fd: number,
    *   normalForce: number, frictionForce: number, gravityForce: number, magAttraction: number
    * }}
    */
-  calcThrustForces(totalMass, a, mu, thetaDeg, magAttraction) {
+  calcThrustForces(totalMass, a, mu, thetaDeg, magAttraction, externalForce = 0) {
     const thetaRad = this.degToRad(thetaDeg);
     const gravNormal = totalMass * this.G * Math.cos(thetaRad);
     const normalForce = gravNormal + magAttraction;
     const frictionForce = mu * normalForce;
     const gravityForce = totalMass * this.G * Math.sin(thetaRad);
 
-    // F_thrust = M·a + Ff + Fg（a 带符号，自动处理加减速）
-    const Fa = totalMass * a + frictionForce + gravityForce;
-    const Fc = frictionForce + gravityForce;
-    const Fd = totalMass * (-a) + frictionForce + gravityForce;
+    // F_thrust = M·a + Ff + Fg + F_ext（a 带符号，自动处理加减速）
+    const Fa = totalMass * a + frictionForce + gravityForce + externalForce;
+    const Fc = frictionForce + gravityForce + externalForce;
+    const Fd = totalMass * (-a) + frictionForce + gravityForce + externalForce;
 
     return { Fa, Fc, Fd, normalForce, frictionForce, gravityForce, magAttraction };
   },
@@ -309,7 +310,7 @@ const Calculator = {
     );
 
     const totalMass = params.loadMass + params.primaryMass;
-    const forces = this.calcThrustForces(totalMass, params.acceleration, params.frictionCoeff, params.inclineAngle, params.magAttraction);
+    const forces = this.calcThrustForces(totalMass, params.acceleration, params.frictionCoeff, params.inclineAngle, params.magAttraction, params.externalForce);
 
     const Frms = this.calcRMSThrust(forces, profile.t1, profile.t2, profile.t3, profile.t4);
     const Fpeak = this.calcPeakThrust(forces);
