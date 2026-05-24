@@ -389,6 +389,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: border-color 0.2s;
 }
 
 .check-item.pass {
@@ -400,6 +401,11 @@ body {
   background: #fce8e6;
   border: 1px solid #f5c6c2;
 }
+
+/* 三色外框：基于安全余量 */
+.check-item.border-safe  { border-color: #ceead6; }
+.check-item.border-warn  { border-color: #f0c848; }
+.check-item.border-danger { border-color: #f5c6c2; }
 
 .check-header {
   display: flex;
