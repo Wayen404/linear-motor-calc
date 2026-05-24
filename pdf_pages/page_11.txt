@@ -1,0 +1,194 @@
+--- Page 11 ---
+我
+们
+的
+优
+势
+AI
+系
+列
+无
+铁
+芯
+U 
+系
+列
+无
+铁
+芯
+直
+线
+电
+机
+模
+组
+精
+密
+力
+矩
+电
+机
+配
+套
+产
+品
+-8-
+AP
+系
+列
+有
+铁
+芯
+平
+板
+直
+线
+电
+机
+定
+制
+化
+精
+密
+平
+台
+平板直线电机
+MAP1-46 系列电机参数
+F-V 曲线
+符号
+单位
+MAP1-46-100
+MAP1-46-185
+额定性能/Rated Performance
+持续推力/Continuous Force @Tmax
+Fc
+N
+68
+136
+峰值推力/Peak Force
+Fp
+N
+217
+435
+电机常数/Motor Constant @25℃
+Km
+N/sqrt(W)
+9.2
+13.2
+线圈最高工作温度/MaxCoil Temp
+Tmax
+℃
+120
+120
+最大持续耗散功率/MaxCont.PowerDiss
+Pc
+W
+22
+41
+电气规格/Electrical Specification
+绕组形式
+Y1
+Y1
+持续电流/Continuous Current @Tmax
+Ic
+Arms
+3
+3
+峰值电流/Peak Current
+Ip
+Arms
+12
+12
+相间电阻/P-P Resistance @25℃±10%
+RL-L
+Ω
+1.74
+3
+相间电感/P-P Inductance ±20%
+LL-L
+mH
+8.15
+17.89
+相间反向电动势/Back EMF @25℃±10%
+KeL-L
+V/m/s
+19.2
+38.5
+力常数/Force Constant @25℃±10%
+Kf
+N/Arms
+23.5
+47
+电气时间常数/Electrical Cycle Time
+Te
+ms
+5.51
+5.51
+最大母线电压/Max Bus Voltage
+Vbus
+V DC
+330
+机械规格/Mechanical Specification
+动子质量/Coil Mass
+Mc
+kg
+0.6
+1.1
+定子质量/Magnetic Stator Mass
+Mw
+kg/m
+2.1
+磁对极距/Magnetic Pole Pari Pitch
+Dp
+mm
+24
+磁吸引力/Magnetic Attraction
+Fa
+kN
+0.55
+1.1
+定子型号/Magnetic Stator Type
+MALP1-46-96G、 MALP1-46-144G、 MALP1-46-192G、 MALP1-46-240G、 
+MALP1-46-288G
+推力速度曲线：MAP1-46-100Y1N
+250
+200
+150
+100
+50
+0
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+5
+10
+15
+20
+速度（m/s）
+持续推力
+峰值推力
+推力速度曲线：MAP1-46-185Y1N
+500
+400
+300
+200
+10
+0
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+2
+4
+6
+8
+速度（m/s）
+持续推力
+峰值推力

@@ -1,0 +1,224 @@
+--- Page 20 ---
+-17-
+MAI1-55 系列电机参数
+符号
+单位
+MAI1-55-60
+MAI1-55-90
+MAI1-55-120
+MAI1-55-150
+额定性能/Rated Performance
+持续推力/Continuous Force @Tmax
+Fc
+N
+18
+27
+36
+45
+峰值推力/Peak Force
+Fp
+N
+90
+135
+180
+225
+电机常数/Motor Constant @25℃
+Km
+N/sqrt(W)
+4.5
+5.5
+6.5
+7.2
+线圈最高工作温度/MaxCoil Temp
+Tmax
+℃
+120
+120
+120
+120
+最大持续耗散功率/MaxCont.PowerDiss
+Pc
+W
+16.2
+24.3
+32.4
+40.5
+电气规格/Electrical Specification
+绕组形式
+Y1
+Y1
+Y1
+Y1
+持续电流/Continuous Current @Tmax
+Ic
+Arms
+2
+2
+2
+2
+峰值电流/Peak Current
+Ip
+Arms
+10
+10
+10
+10
+相间电阻/P-P Resistance @25℃±10%
+RL-L
+Ω
+3.54
+5.49
+7.15
+9.03
+相间电感/P-P Inductance ±20%
+LL-L
+mH
+1.04
+1.5
+2.04
+2.59
+相间反向电动势/Back EMF @25℃±10% KeL-L
+V/m/s
+7.6
+11.4
+15.2
+22.8
+力常数/Force Constant @25℃±10%
+Kf
+N/Arms
+9
+13.5
+18
+27
+电气时间常数/Electrical Cycle Time
+Te
+ms
+0.33
+0.33
+0.33
+0.33
+最大母线电压/Max Bus Voltage
+Vbus
+V DC
+330
+机械规格/Mechanical Specification
+动子质量/Coil Mass
+Mc
+kg
+0.12
+0.18
+0.24
+0.28
+定子质量/Magnetic Stator Mass
+Mw
+kg/m
+3.69
+磁对极距/Magnetic Pole Pari Pitch
+Dp
+mm
+30
+磁吸引力/Magnetic Attraction
+Fa
+kN
+0
+定子型号/Magnetic Stator Type
+MALI1-55-120N、MALI1-55-180N 、MALI1-55-240N 、MALI1-55-300N
+AI 系列无铁芯直线电机
+F-V 曲线
+推力速度曲线：MAI1-55-60Y1N
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+10
+20
+30
+40
+50
+速度（m/s）
+持续推力
+峰值推力
+100
+80
+60
+40
+20
+0
+推力速度曲线：MAI1-55-90Y1N
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+5
+10
+15
+20
+25
+30
+速度（m/s）
+持续推力
+峰值推力
+160
+140
+120
+100
+80
+60
+40
+20
+0
+推力速度曲线：MAI1-55-120Y1N
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+5
+10
+15
+20
+25
+速度（m/s）
+持续推力
+峰值推力
+200
+180
+160
+140
+120
+100
+80
+60
+40
+20
+0
+推力速度曲线：MAI1-55-150Y1N
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+10
+20
+30
+40
+50
+速度（m/s）
+持续推力
+峰值推力
+250
+200
+150
+100
+50
+0

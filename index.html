@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1a73e8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="直线电机推力计算工具 - 基于运动曲线的推力计算">
+  <title>直线电机推力计算工具</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-152.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
+  <link rel="stylesheet" href="css/style.css?v=23">
+</head>
+<body>
+  <header class="header">
+    <h1>直线电机推力计算工具</h1>
+    <p class="subtitle">基于梯形运动曲线的推力分析与校核</p>
+  </header>
+
+  <main class="main">
+    <!-- 输入区域 -->
+    <section class="panel input-panel" id="inputPanel">
+      <h2 class="panel-title">运动参数 <span class="hint">填 S+trun 自动优化，或填任意 3 项</span></h2>
+      <div class="params-grid" id="motionParams">
+        <div class="param-group">
+          <label class="param-label">总行程 S</label>
+          <div class="input-wrapper">
+            <input type="number" id="stroke" class="param-input motion-param" placeholder="建议 0.1~10" step="0.01" min="0.001">
+            <span class="unit">m</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">最大速度 V<sub>max</sub></label>
+          <div class="input-wrapper">
+            <input type="number" id="maxVelocity" class="param-input motion-param" placeholder="建议 0.5~5" step="0.1" min="0.1">
+            <span class="unit">m/s</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">加速度 a</label>
+          <div class="input-wrapper">
+            <input type="number" id="acceleration" class="param-input motion-param" placeholder="建议 1~20" step="0.5" min="0.1">
+            <span class="unit">m/s²</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">运动时间 t<sub>run</sub></label>
+          <div class="input-wrapper">
+            <input type="number" id="motionTime" class="param-input motion-param" placeholder="建议 0.1~10" step="0.01" min="0.001">
+            <span class="unit">s</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">暂停时间 t<sub>dwell</sub></label>
+          <div class="input-wrapper">
+            <input type="number" id="dwellTime" class="param-input" placeholder="建议 0~5" step="0.1" min="0">
+            <span class="unit">s</span>
+          </div>
+        </div>
+        <div class="motion-tip">
+          <span class="motion-tip-icon">ⓘ</span>
+          <span class="motion-tip-text">S 为必填；V<sub>max</sub>、a 可手动输入或自动推算</span>
+        </div>
+      </div>
+
+      <h2 class="panel-title">负载参数 <span class="hint">根据实际工况填写</span></h2>
+      <div class="params-grid" id="loadParams">
+        <div class="param-group">
+          <label class="param-label">负载质量 M</label>
+          <div class="input-wrapper">
+            <input type="number" id="loadMass" class="param-input" placeholder="建议 1~100" step="0.5" min="0">
+            <span class="unit">kg</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">摩擦系数 μ</label>
+          <div class="input-wrapper">
+            <input type="number" id="frictionCoeff" class="param-input" placeholder="直线导轨≈0.01" step="0.005" min="0">
+            <span class="unit">—</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">倾斜角 θ</label>
+          <div class="input-wrapper">
+            <input type="number" id="inclineAngle" class="param-input" placeholder="水平安装填 0" step="1" min="-90" max="90">
+            <span class="unit">°</span>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="panel-title">电机参数 <span class="hint">选电机自动填入，或手动自定义</span></h2>
+      <div class="params-grid" id="motorParams">
+        <div class="param-group" style="grid-column: 1 / -1;">
+          <label class="param-label">选择电机</label>
+          <div class="input-wrapper">
+            <select id="motorSelect" class="motor-select">
+              <option value="custom">自定义（手动输入）</option>
+              <optgroup label="MAP 系列（有铁芯平板）">
+                <option value="map1-46-100">MAP1-46-100</option>
+                <option value="map1-46-185">MAP1-46-185</option>
+                <option value="map1-56-100">MAP1-56-100</option>
+                <option value="map1-56-185">MAP1-56-185</option>
+                <option value="map1-56-270-y1">MAP1-56-270 (Y1)</option>
+                <option value="map1-56-270-y2">MAP1-56-270 (Y2)</option>
+                <option value="map1-76-100">MAP1-76-100</option>
+                <option value="map1-76-185-y1">MAP1-76-185 (Y1)</option>
+                <option value="map1-76-185-y2">MAP1-76-185 (Y2)</option>
+                <option value="map1-76-270-y1">MAP1-76-270 (Y1)</option>
+                <option value="map1-76-270-y2">MAP1-76-270 (Y2)</option>
+                <option value="map1-96-100">MAP1-96-100</option>
+                <option value="map1-96-185-y1">MAP1-96-185 (Y1)</option>
+                <option value="map1-96-185-y2">MAP1-96-185 (Y2)</option>
+                <option value="map1-96-270-y1">MAP1-96-270 (Y1)</option>
+                <option value="map1-96-270-y2">MAP1-96-270 (Y2)</option>
+              </optgroup>
+              <optgroup label="MAI 系列（无铁芯）">
+                <option value="mai1-55-60">MAI1-55-60</option>
+                <option value="mai1-55-90">MAI1-55-90</option>
+                <option value="mai1-55-120">MAI1-55-120</option>
+                <option value="mai1-55-150">MAI1-55-150</option>
+                <option value="mai1-68-60">MAI1-68-60</option>
+                <option value="mai1-68-120">MAI1-68-120</option>
+                <option value="mai1-68-180">MAI1-68-180</option>
+                <option value="mai1-68-240">MAI1-68-240</option>
+                <option value="mai1-68-300">MAI1-68-300</option>
+              </optgroup>
+              <optgroup label="LMC 系列（直线模组）">
+                <option value="lmc88-100-y1">LMC88-100Y1</option>
+                <option value="lmc88-130-y1">LMC88-130Y1</option>
+                <option value="lmc88-185-y1">LMC88-185Y1</option>
+                <option value="lmc88-240-y1">LMC88-240Y1</option>
+                <option value="lmc118-130-y1">LMC118-130Y1</option>
+                <option value="lmc118-185-y1">LMC118-185Y1</option>
+                <option value="lmc118-185-y3">LMC118-185Y3</option>
+                <option value="lmc118-240-y2">LMC118-240Y2</option>
+                <option value="lmc118-355-y3">LMC118-355Y3</option>
+                <option value="lmc168-130-y2">LMC168-130Y2</option>
+                <option value="lmc168-185-y3">LMC168-185Y3</option>
+                <option value="lmc168-240-y2">LMC168-240Y2</option>
+                <option value="lmc168-240-y4">LMC168-240Y4</option>
+                <option value="lmc188-240-y2">LMC188-240Y2</option>
+                <option value="lmc188-240-y4">LMC188-240Y4</option>
+                <option value="lmc188-355-y3">LMC188-355Y3</option>
+                <option value="lmc188-355-y6">LMC188-355Y6</option>
+                <option value="lmc228-240-y4">LMC228-240Y4</option>
+                <option value="lmc228-290-y5">LMC228-290Y5</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">动子质量 M<sub>m</sub></label>
+          <div class="input-wrapper">
+            <input type="number" id="primaryMass" class="param-input" placeholder="选电机自动填入" step="0.1" min="0">
+            <span class="unit">kg</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">力常数 K<sub>f</sub></label>
+          <div class="input-wrapper">
+            <input type="number" id="forceConstant" class="param-input" placeholder="选电机自动填入" step="1" min="0">
+            <span class="unit">N/A</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">持续电流 I<sub>cont</sub></label>
+          <div class="input-wrapper">
+            <input type="number" id="contCurrent" class="param-input" placeholder="选电机自动填入" step="0.1" min="0" readonly>
+            <span class="unit">A</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">峰值电流 I<sub>peak</sub></label>
+          <div class="input-wrapper">
+            <input type="number" id="peakCurrent" class="param-input" placeholder="选电机自动填入" step="0.5" min="0" readonly>
+            <span class="unit">A</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">磁吸力 F<sub>mag</sub></label>
+          <div class="input-wrapper">
+            <input type="number" id="magAttraction" class="param-input" placeholder="选电机自动填入" step="100" min="0">
+            <span class="unit">N</span>
+          </div>
+        </div>
+      </div>
+
+      <button id="calcBtn" class="calc-btn">开始计算</button>
+    </section>
+
+    <!-- 结果区域 -->
+    <section class="panel result-panel" id="resultPanel" style="display:none;">
+      <h2 class="panel-title">计算结果</h2>
+
+      <!-- 运动曲线摘要 -->
+      <div class="result-section">
+        <h3 class="section-title">运动曲线</h3>
+        <div class="result-grid" id="motionSummary"></div>
+      </div>
+
+      <!-- 推力结果 -->
+      <div class="result-section">
+        <h3 class="section-title">推力结果</h3>
+        <div class="result-grid" id="thrustResults"></div>
+      </div>
+
+      <!-- 校核结果 -->
+      <div class="result-section">
+        <h3 class="section-title">校核结果</h3>
+        <div class="check-results" id="checkResults"></div>
+      </div>
+
+      <!-- 图表 -->
+      <div class="result-section chart-section">
+        <h3 class="section-title">曲线图</h3>
+        <div class="chart-container">
+          <canvas id="speedChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="thrustChart"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>直线电机推力计算工具 v1.0</p>
+  </footer>
+
+  <script src="js/chart.umd.min.js"></script>
+  <script src="js/calculator.js?v=19"></script>
+  <script src="js/chart.js?v=19"></script>
+  <script src="js/ui.js?v=20"></script>
+</body>
+</html>

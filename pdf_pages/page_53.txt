@@ -1,0 +1,232 @@
+--- Page 53 ---
+我
+们
+的
+优
+势
+AI
+系
+列
+无
+铁
+芯
+U 
+系
+列
+无
+铁
+芯
+直
+线
+电
+机
+模
+组
+精
+密
+力
+矩
+电
+机
+配
+套
+产
+品
+-50-
+AP
+系
+列
+有
+铁
+芯
+平
+板
+直
+线
+电
+机
+定
+制
+化
+精
+密
+平
+台
+项目
+符号
+单位
+LMC228-240 Y4
+LMC228-290 Y5
+额定性能 /Rated Performance
+持续推力 /Continuous Force @Tmax
+Fc
+N
+938
+1235
+峰值推力 /Peak Force
+Fp
+N
+1833
+2547
+电机常数 /Motor Constant @25℃
+Km
+N/sqrt(W)
+71.3
+81.4
+线圈最高工作温度 /MaxCoil Temp
+Tmax
+℃
+120
+120
+最大持续耗散功率 /MaxCont.PowerDiss
+Pc
+W
+227.1
+302.8
+电气规格 /Electrical Specification
+绕组形式
+Y4
+Y5
+持续电流 /Continuous Current @Tmax
+Ic
+Arms
+12
+16
+峰值电流 /Peak Current
+Ip
+Arms
+32
+45
+相间电阻 /P-P Resistance @25℃ ±10%
+RL-L
+Ω
+0.9
+0.7
+相间电感 /P-P Inductance ±20%
+LL-L
+mH
+11.4
+9.1
+相间反向电动势 /Back EMF @25℃ ±10%
+KeL-L
+V/m/s
+68.1
+68.1
+力常数 /Force Constant @25℃ ±10%
+Kf
+N/Arms
+78.1
+77.2
+电气时间常数 /Electrical Cycle Time
+Te
+ms
+12.7
+13
+最大母线电压 /Max Bus Voltage
+Vbus
+V DC
+540
+机械规格 /Mechanical Specification
+动子质量 /Coil Mass
+Mc
+kg
+8.4
+10.2
+定子质量 /Magnetic Stator Mass
+Mw
+kg/m
+8
+磁对极距 /Magnetic Pole Pari Pitch
+Dp
+mm
+28
+磁吸引力 /Magnetic Attraction
+Fa
+kN
+4.3
+5.4
+定子型号 /Magnetic Stator Type
+MALD1-135-112N，MALD1-135-168N，MALD1-135-336N
+电机技术参数
+电机推力- 速度特性曲线
+0
+400
+800
+1200
+1600
+2000
+2400
+0
+1
+2
+3
+4
+5
+推力（N）
+速度（m/s）
+连续推力
+峰值推力
+推力速度曲线LMC228-240Y4
+直流母线电压：310V
+0
+400
+800
+1200
+1600
+2000
+2400
+2800
+3200
+0
+1
+2
+3
+4
+5
+推力（N）
+速度（m/s）
+连续推力
+峰值推力
+推力速度曲线LMC228-290Y5
+直流母线电压：310V
+0
+400
+800
+1200
+1600
+2000
+2400
+2800
+3200
+0
+2
+4
+6
+8
+10
+推力（N）
+速度（m/s）
+连续推力
+峰值推力
+推力速度曲线LMC228-290Y5
+直流母线电压：540V
+推力速度曲线LMC228-240Y4
+直流母线电压：540V
+0
+400
+800
+1200
+1600
+2000
+2400
+0
+2
+4
+6
+8
+10
+推力（N）
+速度（m/s）
+连续推力
+峰值推力
+备注：310V 使用220V 驱动器，540V 使用380V 驱动器。

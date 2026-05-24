@@ -1,0 +1,270 @@
+--- Page 13 ---
+我
+们
+的
+优
+势
+AI
+系
+列
+无
+铁
+芯
+U 
+系
+列
+无
+铁
+芯
+直
+线
+电
+机
+模
+组
+精
+密
+力
+矩
+电
+机
+配
+套
+产
+品
+-10-
+AP
+系
+列
+有
+铁
+芯
+平
+板
+直
+线
+电
+机
+定
+制
+化
+精
+密
+平
+台
+符号
+单位
+MAP1-56-100
+MAP1-56-185
+MAP1-56-270
+额定性能/Rated Performance
+持续推力/Continuous Force @Tmax
+Fc
+N
+83
+165
+249
+峰值推力/Peak Force
+Fp
+N
+272
+535
+797
+电机常数/Motor Constant @25℃
+Km
+N/sqrt(W)
+14
+20
+25
+线圈最高工作温度/MaxCoil Temp
+Tmax
+℃
+120
+120
+120
+最大持续耗散功率/MaxCont.PowerDiss
+Pc
+W
+35.98
+62.7
+87.45
+电气规格/Electrical Specification
+绕组形式
+Y1
+Y1
+Y1
+Y2
+持续电流/Continuous Current @Tmax
+Ic
+Arms
+3
+3
+3
+6
+峰值电流/Peak Current
+Ip
+Arms
+12
+12
+12
+24
+相间电阻/P-P Resistance @25℃±10%
+RL-L
+Ω
+1.83
+3.65
+5.23
+1.55
+相间电感/P-P Inductance ±20%
+LL-L
+mH
+10.49
+21.39
+31.6
+7.25
+相间反向电动势/Back EMF @25℃±10%
+KeL-L
+V/m/s
+22.8
+45.6
+68.4
+34.2
+力常数/Force Constant @25℃±10%
+Kf
+N/Arms
+27.5
+55
+82
+27.33
+电气时间常数/Electrical Cycle Time
+Te
+ms
+5.45
+5.45
+5.45
+5.45
+最大母线电压/Max Bus Voltage
+Vbus
+V DC
+330
+机械规格/Mechanical Specification
+动子质量/Coil Mass
+Mc
+kg
+0.9
+1.7
+2.6
+定子质量/Magnetic Stator Mass
+Mw
+kg/m
+3.1
+磁对极距/Magnetic Pole Pari Pitch
+Dp
+mm
+24
+磁吸引力/Magnetic Attraction
+Fa
+kN
+0.65
+1.3
+1.95
+定子型号/Magnetic Stator Type
+MALP1-56-96G、 MALP1-56-144G、 MALP1-56-192G、 MALP1-56-240G、
+ MALP1-56-288G
+平板直线电机
+MAP1-56 系列电机参数
+F-V 曲线
+推力速度曲线：MAP1-56-100Y1N
+300
+250
+200
+150
+100
+50
+0
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+2
+4
+6
+8
+10
+12
+14
+速度（m/s）
+持续推力
+峰值推力
+推力速度曲线：MAP1-56-185Y1N
+600
+500
+400
+300
+200
+100
+0
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+1
+2
+3
+4
+5
+6
+7
+速度（m/s）
+持续推力
+峰值推力
+峰值推力
+推力速度曲线：MAP1-56-270Y1N
+1000
+800
+600
+400
+200
+0
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+1
+2
+3
+4
+5
+速度（m/s）
+持续推力
+推力速度曲线：MAP1-56-270Y2N
+1000
+800
+600
+400
+200
+0
+直流母线电压：310V
+推
+力
+（
+N
+）
+0
+2
+4
+6
+8
+10
+速度（m/s）
+持续推力
+峰值推力

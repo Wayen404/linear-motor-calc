@@ -1,0 +1,245 @@
+--- Page 22 ---
+-19-
+MAI1-68 系列电机参数
+符号
+单位
+MAI1-68-60
+MAI1-68-120 MAI1-68-180 MAI1-68-240 MAI1-68-300
+额定性能/Rated Performance
+持续推力/Continuous Force @Tmax
+Fc
+N
+35
+70
+105
+140
+175
+峰值推力/Peak Force
+Fp
+N
+168
+336
+504
+672
+840
+电机常数/Motor Constant @25℃
+Km
+N/sqrt(W)
+8
+12
+14.5
+17
+20
+线圈最高工作温度/MaxCoil Temp
+Tmax
+℃
+120
+120
+120
+120
+120
+最大持续耗散功率/MaxCont.PowerDiss
+Pc
+W
+20.5
+41
+61.5
+82
+102.5
+电气规格/Electrical Specification
+绕组形式
+Y1
+Y1
+Y1
+Y1
+Y1
+持续电流/Continuous Current @Tmax
+Ic
+Arms
+2.5
+2.5
+2.5
+2.5
+2.5
+峰值电流/Peak Current
+Ip
+Arms
+12
+12
+12
+12
+12
+相间电阻/P-P Resistance @25℃±10%
+RL-L
+Ω
+2.45
+5.2
+7.54
+9.79
+12.59
+相间电感/P-P Inductance ±20%
+LL-L
+mH
+0.76
+4.12
+5.81
+7.52
+10.5
+相间反向电动势/Back EMF @25℃±10% KeL-L
+V/m/s
+11.47
+23
+34.5
+45.9
+57.3
+力常数/Force Constant @25℃±10%
+Kf
+N/Arms
+14
+28
+42
+56
+70
+电气时间常数/Electrical Cycle Time
+Te
+ms
+0.77
+0.77
+0.77
+0.77
+0.77
+最大母线电压/Max Bus Voltage
+Vbus
+V DC
+330
+机械规格/Mechanical Specification
+动子质量/Coil Mass
+Mc
+kg
+0.21
+0.42
+0.63
+0.84
+1.05
+定子质量/Magnetic Stator Mass
+Mw
+kg/m
+9.5
+磁对极距/Magnetic Pole Pari Pitch
+Dp
+mm
+60
+磁吸引力/Magnetic Attraction
+Fa
+kN
+0
+定子型号/Magnetic Stator Type
+MALI1-68-120N、MALI1-68-180N、MALI1-68-240N、MALI1-68-300N
+AI 系列无铁芯直线电机
+F-V 曲线
+推力速度曲线：MAI1-68-60Y1N
+推力速度曲线：MAI1-68-300Y1N
+推力速度曲线：MAI1-68-120Y1N
+推力速度曲线：MAI1-68-240Y1N
+推力速度曲线：MAI1-68-180Y1N
+直流母线电压：310V
+直流母线电压：310V
+直流母线电压：310V
+直流母线电压：310V
+直流母线电压：310V
+推
+力
+（
+N
+）
+推
+力
+（
+N
+）
+推
+力
+（
+N
+）
+推
+力
+（
+N
+）
+推
+力
+（
+N
+）
+0
+5
+10
+15
+20
+25
+30
+0
+1
+2
+3
+4
+5
+6
+0
+2
+4
+6
+8
+10
+12
+14
+0
+1
+2
+3
+4
+5
+6
+7
+0
+2
+4
+6
+8
+10
+速度（m/s）
+速度（m/s）
+速度（m/s）
+速度（m/s）
+速度（m/s）
+持续推力
+持续推力
+持续推力
+持续推力
+持续推力
+峰值推力
+峰值推力
+峰值推力
+峰值推力
+峰值推力
+200
+100
+0
+1000
+500
+0
+400
+300
+200
+100
+0
+800
+600
+400
+200
+0
+600
+400
+200
+0
