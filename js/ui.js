@@ -379,27 +379,39 @@ const UI = {
         pass: rmsCheck.pass,
         detail: `RMS 推力 ${result.Frms.toFixed(2)} N ${rmsCheck.pass ? '≤' : '>'} 持续推力额定 ${result.Fcont.toFixed(2)} N`,
         ratio: rmsCheck.ratio,
+        margin: rmsCheck.ratio > 0 ? 1 / rmsCheck.ratio : 0,
       },
       {
         name: '峰值推力校核',
         pass: peakCheck.pass,
         detail: `峰值推力 ${result.Fpeak.toFixed(2)} N ${peakCheck.pass ? '≤' : '>'} 峰值推力额定 ${result.Fpeak_rated.toFixed(2)} N`,
         ratio: peakCheck.ratio,
+        margin: peakCheck.ratio > 0 ? 1 / peakCheck.ratio : 0,
       },
     ];
 
-    el.innerHTML = checks.map(check => `
+    el.innerHTML = checks.map(check => {
+      // 计算安全余量百分比
+      let marginText = '';
+      if (check.ratio > 0) {
+        const marginPct = ((check.margin - 1) * 100).toFixed(0);
+        marginText = check.margin >= 1
+          ? `（安全余量：${marginPct}%）`
+          : `（安全余量：不足）`;
+      }
+
+      return `
       <div class="check-item ${check.pass ? 'pass' : 'fail'}">
         <div class="check-header">
           <span class="check-name">${check.name}</span>
           <span class="check-badge">${check.pass ? '✓ 合格' : '✗ 不合格'}</span>
         </div>
-        <div class="check-detail">${check.detail}</div>
+        <div class="check-detail">${check.detail} ${marginText}</div>
         <div class="progress-bar">
           <div class="progress-fill ${getRatioClass(check.ratio)}" style="width: ${Math.min(check.ratio * 100, 100)}%"></div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   },
 
   drawCharts(profile, forces) {
