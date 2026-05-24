@@ -363,6 +363,24 @@ body {
   font-weight: 700;
 }
 
+/* 黄色底色 + 蓝色文字（最大速度/加速度、额定/峰值推力） */
+.result-item.yellow-bg {
+  background: #fff3cd;
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+}
+
+.result-item.yellow-bg .label {
+  color: #1a73e8;
+  font-weight: 700;
+}
+
+.result-item.yellow-bg .value {
+  color: #1a73e8;
+  font-weight: 700;
+}
+
 /* === Check Results === */
 .check-item {
   padding: 14px;

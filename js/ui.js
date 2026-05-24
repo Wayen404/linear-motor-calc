@@ -231,14 +231,14 @@ const UI = {
       { label: '暂停时间', value: `${t4.toFixed(2)} s` },
       { label: '运动时间 (不含暂停)', value: `${t_run.toFixed(2)} s`, highlight: true },
       { label: '运动周期', value: `${cycleTime.toFixed(2)} s` },
-      { label: '最大速度', value: `${VmaxActual.toFixed(2)} m/s`, highlight: true },
-      { label: '最大加速度', value: `${accel.toFixed(2)} m/s²`, highlight: true },
       { label: '加速距离', value: `${profile.S1.toFixed(2)} m` },
       { label: '减速距离', value: `${profile.S3.toFixed(2)} m` },
+      { label: '最大速度', value: `${VmaxActual.toFixed(2)} m/s`, yellowBg: true },
+      { label: '最大加速度', value: `${accel.toFixed(2)} m/s²`, yellowBg: true },
     ];
 
     el.innerHTML = items.map(item => `
-      <div class="result-item">
+      <div class="result-item ${item.yellowBg ? 'yellow-bg' : ''}">
         <span class="label">${item.label}</span>
         <span class="value ${item.highlight ? 'highlight' : ''}">${item.value}</span>
       </div>
@@ -253,8 +253,8 @@ const UI = {
       { label: '加速推力 Fa', value: `${Fa.toFixed(2)} N`, highlight: true },
       { label: '匀速推力 Fc', value: `${Fc.toFixed(2)} N` },
       { label: '减速推力 Fd', value: `${Fd.toFixed(2)} N` },
-      { label: 'RMS 推力', value: `${result.Frms.toFixed(2)} N`, highlight: true },
-      { label: '峰值推力', value: `${result.Fpeak.toFixed(2)} N`, highlight: true },
+      { label: '额定推力', value: `${result.Frms.toFixed(2)} N`, yellowBg: true },
+      { label: '峰值推力', value: `${result.Fpeak.toFixed(2)} N`, yellowBg: true },
       { label: '法向力 N', value: `${normalForce.toFixed(2)} N` },
       { label: '磁吸力 Fmag', value: `${magAttraction.toFixed(2)} N` },
       { label: '摩擦力 μN', value: `${frictionForce.toFixed(2)} N` },
@@ -270,7 +270,7 @@ const UI = {
     }
 
     el.innerHTML = items.map(item => `
-      <div class="result-item">
+      <div class="result-item ${item.yellowBg ? 'yellow-bg' : ''}">
         <span class="label">${item.label}</span>
         <span class="value ${item.highlight ? 'highlight' : ''}">${item.value}</span>
       </div>
