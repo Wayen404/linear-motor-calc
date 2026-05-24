@@ -125,8 +125,6 @@ const Calculator = {
       return { ...d, derivedKeys: [], error: null };
     }
 
-    let derivedKeys = [];
-
     // Case 1: 已知 S, Vmax, a → 推导 t_run
     if ('S' in d && 'Vmax' in d && 'a' in d) {
       derivedKeys = ['t_run'];

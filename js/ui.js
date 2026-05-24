@@ -13,6 +13,9 @@ const UI = {
   /** 电机参数输入 ID 列表（由电机选择自动填充） */
   motorFieldIds: ['primaryMass', 'forceConstant', 'contCurrent', 'peakCurrent', 'magAttraction'],
 
+  /** 上一次推导的字段 key 列表 */
+  _lastDerivedKeys: [],
+
   init() {
     document.getElementById('calcBtn').addEventListener('click', () => this.calculate());
     document.querySelectorAll('.param-input').forEach(el => {
@@ -22,6 +25,12 @@ const UI = {
       el.addEventListener('focus', () => {
         // 如果聚焦的是运动参数，清除推导样式
         if (el.classList.contains('motion-param')) this.clearDerivedStyles();
+      });
+      el.addEventListener('input', () => {
+        // 用户在运动参数输入框中打字时，清除之前推导字段的值
+        if (el.classList.contains('motion-param') && this._lastDerivedKeys.length > 0) {
+          this.clearDerivedValues();
+        }
       });
     });
     document.getElementById('motorSelect').addEventListener('change', (e) => this.onMotorChange(e));
@@ -39,8 +48,20 @@ const UI = {
     });
   },
 
+  /** 清除之前推导字段的值（用户在运动参数输入框中打字时触发） */
+  clearDerivedValues() {
+    if (this._lastDerivedKeys.length === 0) return;
+    this.motionFields.forEach(({ id, key }) => {
+      if (this._lastDerivedKeys.includes(key)) {
+        document.getElementById(id).value = '';
+      }
+    });
+    this._lastDerivedKeys = [];
+  },
+
   /** 在推导的字段上显示黄色标记 */
   markDerived(derivedKeys) {
+    this._lastDerivedKeys = derivedKeys || [];
     if (!derivedKeys || derivedKeys.length === 0) return;
     this.motionFields.forEach(({ id, key }) => {
       if (derivedKeys.includes(key)) {
