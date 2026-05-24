@@ -250,11 +250,11 @@ const UI = {
     const { Fa, Fc, Fd, frictionForce, gravityForce, normalForce, magAttraction } = result.forces;
 
     const items = [
+      { label: '额定推力', value: `${result.Frms.toFixed(2)} N`, yellowBg: true },
+      { label: '峰值推力', value: `${result.Fpeak.toFixed(2)} N`, yellowBg: true },
       { label: '加速推力 Fa', value: `${Fa.toFixed(2)} N`, highlight: true },
       { label: '匀速推力 Fc', value: `${Fc.toFixed(2)} N` },
       { label: '减速推力 Fd', value: `${Fd.toFixed(2)} N` },
-      { label: '额定推力', value: `${result.Frms.toFixed(2)} N`, yellowBg: true },
-      { label: '峰值推力', value: `${result.Fpeak.toFixed(2)} N`, yellowBg: true },
       { label: '法向力 N', value: `${normalForce.toFixed(2)} N` },
       { label: '磁吸力 Fmag', value: `${magAttraction.toFixed(2)} N` },
       { label: '摩擦力 μN', value: `${frictionForce.toFixed(2)} N` },
