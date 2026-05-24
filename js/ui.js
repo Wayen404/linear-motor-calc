@@ -373,13 +373,13 @@ const UI = {
       return 'danger';
     };
 
-    /** 根据余量返回外框颜色级别 */
-    const getBorderLevel = (usageRatio) => {
-      if (usageRatio <= 0) return 'border-safe';
+    /** 根据余量返回级别（背景 + 外框 + 徽标同步） */
+    const getLevelClass = (usageRatio) => {
+      if (usageRatio <= 0) return 'level-green';
       const margin = 1 / usageRatio;
-      if (margin >= 1.3) return 'border-safe';
-      if (margin >= 1.0) return 'border-warn';
-      return 'border-danger';
+      if (margin >= 1.3) return 'level-green';
+      if (margin >= 1.0) return 'level-yellow';
+      return 'level-red';
     };
 
     const checks = [
@@ -410,7 +410,7 @@ const UI = {
       }
 
       return `
-      <div class="check-item ${check.pass ? 'pass' : 'fail'} ${getBorderLevel(check.ratio)}">
+      <div class="check-item ${getLevelClass(check.ratio)}">
         <div class="check-header">
           <span class="check-name">${check.name}</span>
           <span class="check-badge">${check.pass ? '✓ 合格' : '✗ 不合格'}</span>

@@ -389,23 +389,24 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.2s;
 }
 
-.check-item.pass {
+/* 三色级别：背景 + 外框同步 */
+.check-item.level-green {
   background: #e6f4ea;
   border: 1px solid #ceead6;
 }
 
-.check-item.fail {
+.check-item.level-yellow {
+  background: #fef7e0;
+  border: 1px solid #f0c848;
+}
+
+.check-item.level-red {
   background: #fce8e6;
   border: 1px solid #f5c6c2;
 }
-
-/* 三色外框：基于安全余量 */
-.check-item.border-safe  { border-color: #ceead6; }
-.check-item.border-warn  { border-color: #f0c848; }
-.check-item.border-danger { border-color: #f5c6c2; }
 
 .check-header {
   display: flex;
@@ -425,12 +426,17 @@ body {
   font-weight: 600;
 }
 
-.pass .check-badge {
+.level-green .check-badge {
   background: var(--success);
   color: white;
 }
 
-.fail .check-badge {
+.level-yellow .check-badge {
+  background: var(--warning);
+  color: white;
+}
+
+.level-red .check-badge {
   background: var(--danger);
   color: white;
 }
