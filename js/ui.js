@@ -39,6 +39,10 @@ const UI = {
     });
     document.getElementById('motorSelect').addEventListener('change', (e) => this.onMotorChange(e));
 
+    // 电机分类切换
+    document.getElementById('motorCategory').addEventListener('change', (e) => this.onMotorCategoryChange(e));
+    this.populateMotorOptions(document.getElementById('motorCategory').value);
+
     // 禁止滚轮更改数字输入值
     document.querySelectorAll('.param-input[type="number"]').forEach(el => {
       el.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
@@ -89,6 +93,55 @@ const UI = {
     });
   },
 
+  /** 根据电机分类动态填充电机型号下拉框 */
+  populateMotorOptions(category) {
+    const select = document.getElementById('motorSelect');
+    // 清空现有选项
+    select.innerHTML = '';
+
+    // 始终保留"自定义"选项
+    const customOpt = document.createElement('option');
+    customOpt.value = 'custom';
+    customOpt.textContent = '自定义（手动输入）';
+    select.appendChild(customOpt);
+
+    if (category && category !== 'custom') {
+      // 按 key 前缀过滤属于该分类的电机
+      Object.entries(Calculator.MOTORS).forEach(([key, motor]) => {
+        if (key.startsWith(category) && motor.name) {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = motor.name;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    select.value = 'custom';
+  },
+
+  /** 重置电机参数输入框（清空值、移除样式、恢复可编辑） */
+  resetMotorFields() {
+    this.motorFieldIds.forEach(id => {
+      const el = document.getElementById(id);
+      const wrapper = el?.closest('.input-wrapper');
+      if (wrapper) wrapper.classList.remove('motor-filled');
+      el?.classList.remove('motor-filled');
+      if (id !== 'contCurrent' && id !== 'peakCurrent') {
+        el?.removeAttribute('readonly');
+      }
+      el.value = '';
+      const badge = el?.parentElement?.querySelector('.motor-badge');
+      if (badge) badge.remove();
+    });
+  },
+
+  /** 电机分类切换处理 */
+  onMotorCategoryChange(e) {
+    this.populateMotorOptions(e.target.value);
+    this.resetMotorFields();
+  },
+
   /** 电机切换处理：自动填充电机参数 */
   onMotorChange(e) {
     const motorId = e.target.value;
@@ -96,20 +149,7 @@ const UI = {
     if (!motor) return;
 
     if (motorId === 'custom') {
-      // 自定义模式：清空自动填充标记，清空值，恢复可编辑
-      this.motorFieldIds.forEach(id => {
-        const el = document.getElementById(id);
-        const wrapper = el?.closest('.input-wrapper');
-        if (wrapper) wrapper.classList.remove('motor-filled');
-        el?.classList.remove('motor-filled');
-        // 持续电流和峰值电流始终为只读显示项
-        if (id !== 'contCurrent' && id !== 'peakCurrent') {
-          el?.removeAttribute('readonly');
-        }
-        el.value = '';
-        const badge = el?.parentElement?.querySelector('.motor-badge');
-        if (badge) badge.remove();
-      });
+      this.resetMotorFields();
       return;
     }
 

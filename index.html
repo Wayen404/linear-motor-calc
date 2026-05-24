@@ -101,86 +101,21 @@
       <h2 class="panel-title">电机参数 <span class="hint">选电机自动填入，或手动自定义</span></h2>
       <div class="params-grid" id="motorParams">
         <div class="param-group" style="grid-column: 1 / -1;">
-          <label class="param-label">选择电机</label>
+          <label class="param-label">电机分类</label>
+          <div class="input-wrapper">
+            <select id="motorCategory" class="motor-select">
+              <option value="custom">自定义（手动输入）</option>
+              <option value="map">有铁芯（MAP 系列）</option>
+              <option value="mai">无铁芯（MAI 系列）</option>
+              <option value="lmc">直线模组（LMC 系列）</option>
+            </select>
+          </div>
+        </div>
+        <div class="param-group" style="grid-column: 1 / -1;">
+          <label class="param-label">选择型号</label>
           <div class="input-wrapper">
             <select id="motorSelect" class="motor-select">
               <option value="custom">自定义（手动输入）</option>
-              <optgroup label="MAP 系列（有铁芯平板）">
-                <option value="map1-46-100">MAP1-46-100</option>
-                <option value="map1-46-185">MAP1-46-185</option>
-                <option value="map1-56-100">MAP1-56-100</option>
-                <option value="map1-56-185">MAP1-56-185</option>
-                <option value="map1-56-270-y1">MAP1-56-270 (Y1)</option>
-                <option value="map1-56-270-y2">MAP1-56-270 (Y2)</option>
-                <option value="map1-76-100">MAP1-76-100</option>
-                <option value="map1-76-185-y1">MAP1-76-185 (Y1)</option>
-                <option value="map1-76-185-y2">MAP1-76-185 (Y2)</option>
-                <option value="map1-76-270-y1">MAP1-76-270 (Y1)</option>
-                <option value="map1-76-270-y2">MAP1-76-270 (Y2)</option>
-                <option value="map1-96-100">MAP1-96-100</option>
-                <option value="map1-96-185-y1">MAP1-96-185 (Y1)</option>
-                <option value="map1-96-185-y2">MAP1-96-185 (Y2)</option>
-                <option value="map1-96-270-y1">MAP1-96-270 (Y1)</option>
-                <option value="map1-96-270-y2">MAP1-96-270 (Y2)</option>
-              </optgroup>
-              <optgroup label="MAI 系列（无铁芯）">
-                <option value="mai1-55-60">MAI1-55-60</option>
-                <option value="mai1-55-90">MAI1-55-90</option>
-                <option value="mai1-55-120">MAI1-55-120</option>
-                <option value="mai1-55-150">MAI1-55-150</option>
-                <option value="mai1-68-60">MAI1-68-60</option>
-                <option value="mai1-68-120">MAI1-68-120</option>
-                <option value="mai1-68-180">MAI1-68-180</option>
-                <option value="mai1-68-240">MAI1-68-240</option>
-                <option value="mai1-68-300">MAI1-68-300</option>
-                <option value="mai1-93-60">MAI1-93-60</option>
-                <option value="mai1-93-120">MAI1-93-120</option>
-                <option value="mai1-93-180">MAI1-93-180</option>
-                <option value="mai1-93-240-y1">MAI1-93-240 (Y1)</option>
-                <option value="mai1-93-240-y2">MAI1-93-240 (Y2)</option>
-                <option value="mai1-93-300-y1">MAI1-93-300 (Y1)</option>
-                <option value="mai1-93-300-y2">MAI1-93-300 (Y2)</option>
-                <option value="mai1-93-360-y1">MAI1-93-360 (Y1)</option>
-                <option value="mai1-93-360-y2">MAI1-93-360 (Y2)</option>
-                <option value="mai1-122-85">MAI1-122-85</option>
-                <option value="mai1-122-169">MAI1-122-169</option>
-                <option value="mai1-122-253-y1">MAI1-122-253 (Y1)</option>
-                <option value="mai1-122-253-y2">MAI1-122-253 (Y2)</option>
-                <option value="mai1-122-337-y1">MAI1-122-337 (Y1)</option>
-                <option value="mai1-122-337-y2">MAI1-122-337 (Y2)</option>
-                <option value="mai1-122-421-y1">MAI1-122-421 (Y1)</option>
-                <option value="mai1-122-421-y2">MAI1-122-421 (Y2)</option>
-                <option value="mai1-155-169">MAI1-155-169</option>
-                <option value="mai1-155-253-y1">MAI1-155-253 (Y1)</option>
-                <option value="mai1-155-253-y2">MAI1-155-253 (Y2)</option>
-                <option value="mai1-155-337-y1">MAI1-155-337 (Y1)</option>
-                <option value="mai1-155-337-y2">MAI1-155-337 (Y2)</option>
-                <option value="mai1-155-421-y1">MAI1-155-421 (Y1)</option>
-                <option value="mai1-155-421-y2">MAI1-155-421 (Y2)</option>
-                <option value="mai1-155-505-y2">MAI1-155-505 (Y2)</option>
-                <option value="mai1-155-505-y3">MAI1-155-505 (Y3)</option>
-              </optgroup>
-              <optgroup label="LMC 系列（直线模组）">
-                <option value="lmc88-100-y1">LMC88-100Y1</option>
-                <option value="lmc88-130-y1">LMC88-130Y1</option>
-                <option value="lmc88-185-y1">LMC88-185Y1</option>
-                <option value="lmc88-240-y1">LMC88-240Y1</option>
-                <option value="lmc118-130-y1">LMC118-130Y1</option>
-                <option value="lmc118-185-y1">LMC118-185Y1</option>
-                <option value="lmc118-185-y3">LMC118-185Y3</option>
-                <option value="lmc118-240-y2">LMC118-240Y2</option>
-                <option value="lmc118-355-y3">LMC118-355Y3</option>
-                <option value="lmc168-130-y2">LMC168-130Y2</option>
-                <option value="lmc168-185-y3">LMC168-185Y3</option>
-                <option value="lmc168-240-y2">LMC168-240Y2</option>
-                <option value="lmc168-240-y4">LMC168-240Y4</option>
-                <option value="lmc188-240-y2">LMC188-240Y2</option>
-                <option value="lmc188-240-y4">LMC188-240Y4</option>
-                <option value="lmc188-355-y3">LMC188-355Y3</option>
-                <option value="lmc188-355-y6">LMC188-355Y6</option>
-                <option value="lmc228-240-y4">LMC228-240Y4</option>
-                <option value="lmc228-290-y5">LMC228-290Y5</option>
-              </optgroup>
             </select>
           </div>
         </div>
@@ -266,6 +201,6 @@
   <script src="js/chart.umd.min.js"></script>
   <script src="js/calculator.js?v=23"></script>
   <script src="js/chart.js?v=20"></script>
-  <script src="js/ui.js?v=26"></script>
+  <script src="js/ui.js?v=27"></script>
 </body>
 </html>
