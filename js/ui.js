@@ -367,7 +367,7 @@ const UI = {
     return `
       <div class="match-item" data-motor-key="${m.key}">
         <div class="match-info">
-          <div class="match-name">${m.name}${isBest ? ' <span class="best-badge">最佳推荐</span>' : ''}</div>
+          <div class="match-name">${m.name}${isBest ? ' <span class="best-badge">最佳推力匹配</span>' : ''}</div>
           <div class="match-detail">
             需求 ${m.Frms.toFixed(1)}/${m.Fpeak.toFixed(1)} N · 额定 ${m.Fcont}/${m.Fpeak_rated} N · 动子 ${m.coilMass} kg
           </div>
