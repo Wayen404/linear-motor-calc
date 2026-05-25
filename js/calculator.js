@@ -363,8 +363,12 @@ const Calculator = {
       });
     });
 
-    // 按评分降序排列
-    all.sort((a, b) => b.score - a.score);
+    // 按评分升序排列（最接近需求的排最前，通过的优先于未通过的）
+    all.sort((a, b) => {
+      if (a.score >= 1 && b.score < 1) return -1;
+      if (a.score < 1 && b.score >= 1) return 1;
+      return a.score - b.score;
+    });
 
     return {
       top: all.filter(m => m.score >= 1),
