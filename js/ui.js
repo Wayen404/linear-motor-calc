@@ -438,7 +438,7 @@ const UI = {
 
     const matched = Calculator.autoMatchMotors(result.Frms, result.Fpeak, category !== 'custom' ? category : null);
 
-    if (!matched.safe.length && !matched.warn.length && !matched.fail.length) {
+    if (!matched.safe.length && !matched.warn.length) {
       section.style.display = 'none';
       return;
     }
@@ -459,14 +459,6 @@ const UI = {
     if (matched.warn.length > 0) {
       html += `<div style="margin-top:${matched.safe.length > 0 ? '10' : '0'}px;margin-bottom:6px;font-size:0.82rem;color:var(--text-secondary);padding:2px 2px;">● 满足但余量不足 30%</div>`;
       matched.warn.forEach(m => {
-        html += this._buildMatchCard(m, false);
-      });
-    }
-
-    // Tier 3: 不满足
-    if (matched.fail.length > 0) {
-      html += `<div style="margin-top:${matched.safe.length > 0 || matched.warn.length > 0 ? '10' : '0'}px;margin-bottom:6px;font-size:0.82rem;color:var(--text-secondary);padding:2px 2px;">● 不满足需求</div>`;
-      matched.fail.forEach(m => {
         html += this._buildMatchCard(m, false);
       });
     }
