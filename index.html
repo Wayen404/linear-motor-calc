@@ -98,72 +98,6 @@
         </div>
       </div>
 
-      <h2 class="panel-title">电机参数 <span class="hint">选电机自动填入，或手动自定义</span></h2>
-      <div class="params-grid" id="motorParams">
-        <div class="param-group" style="grid-column: 1 / -1;">
-          <label class="param-label">品牌</label>
-          <div class="input-wrapper">
-            <select id="motorBrand" class="motor-select">
-              <option value="inovance">汇川 (Inovance)</option>
-            </select>
-          </div>
-        </div>
-        <div class="param-group" style="grid-column: 1 / -1;">
-          <label class="param-label">电机分类</label>
-          <div class="input-wrapper">
-            <select id="motorCategory" class="motor-select">
-              <option value="custom">自定义（手动输入）</option>
-              <option value="map">有铁芯（MAP 系列）</option>
-              <option value="mai">无铁芯（MAI 系列）</option>
-              <option value="lmc">直线模组（LMC 系列）</option>
-            </select>
-          </div>
-        </div>
-        <div class="param-group" style="grid-column: 1 / -1;">
-          <label class="param-label">选择型号</label>
-          <div class="input-wrapper">
-            <select id="motorSelect" class="motor-select">
-              <option value="custom">自定义（手动输入）</option>
-            </select>
-          </div>
-        </div>
-        <div class="param-group">
-          <label class="param-label">动子质量 M<sub>m</sub></label>
-          <div class="input-wrapper">
-            <input type="number" id="primaryMass" class="param-input" placeholder="选电机自动填入" step="0.1" min="0">
-            <span class="unit">kg</span>
-          </div>
-        </div>
-        <div class="param-group">
-          <label class="param-label">力常数 K<sub>f</sub></label>
-          <div class="input-wrapper">
-            <input type="number" id="forceConstant" class="param-input" placeholder="选电机自动填入" step="1" min="0">
-            <span class="unit">N/A</span>
-          </div>
-        </div>
-        <div class="param-group">
-          <label class="param-label">持续电流 I<sub>cont</sub></label>
-          <div class="input-wrapper">
-            <input type="number" id="contCurrent" class="param-input" placeholder="选电机自动填入" step="0.1" min="0" readonly>
-            <span class="unit">A</span>
-          </div>
-        </div>
-        <div class="param-group">
-          <label class="param-label">峰值电流 I<sub>peak</sub></label>
-          <div class="input-wrapper">
-            <input type="number" id="peakCurrent" class="param-input" placeholder="选电机自动填入" step="0.5" min="0" readonly>
-            <span class="unit">A</span>
-          </div>
-        </div>
-        <div class="param-group">
-          <label class="param-label">磁吸力 F<sub>mag</sub></label>
-          <div class="input-wrapper">
-            <input type="number" id="magAttraction" class="param-input" placeholder="选电机自动填入" step="100" min="0">
-            <span class="unit">N</span>
-          </div>
-        </div>
-      </div>
-
       <button id="calcBtn" class="calc-btn">开始计算</button>
     </section>
 
@@ -215,6 +149,6 @@
   <script src="js/chart.umd.min.js"></script>
   <script src="js/calculator.js?v=27"></script>
   <script src="js/chart.js?v=20"></script>
-  <script src="js/ui.js?v=33"></script>
+  <script src="js/ui.js?v=34"></script>
 </body>
 </html>

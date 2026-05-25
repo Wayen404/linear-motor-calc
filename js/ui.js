@@ -10,8 +10,8 @@ const UI = {
     { id: 'motionTime',  key: 't_run',  label: '运动时间 trun' },
   ],
 
-  /** 电机参数输入 ID 列表（由电机选择自动填充） */
-  motorFieldIds: ['primaryMass', 'forceConstant', 'contCurrent', 'peakCurrent', 'magAttraction'],
+  /** 当前选中的电机（null = 未选择） */
+  _selectedMotor: null,
 
   /** 上一次推导的字段 key 列表 */
   _lastDerivedKeys: [],
@@ -23,13 +23,9 @@ const UI = {
         if (e.key === 'Enter') this.calculate();
       });
       el.addEventListener('focus', () => {
-        // 如果聚焦的是运动参数，清除推导样式
         if (el.classList.contains('motion-param')) this.clearDerivedStyles();
       });
       el.addEventListener('input', () => {
-        // 用户在运动参数输入框中打字时，清除之前推导字段的值
-        // 如果当前编辑的是推导字段（如 Vmax/a），不清除它自己，只清其他
-        // 如果当前编辑的是非推导字段（如 S/t_run），清除所有推导字段
         if (el.classList.contains('motion-param') && this._lastDerivedKeys.length > 0) {
           const field = this.motionFields.find(f => f.id === el.id);
           const isDerivedField = field && this._lastDerivedKeys.includes(field.key);
@@ -37,11 +33,6 @@ const UI = {
         }
       });
     });
-    document.getElementById('motorSelect').addEventListener('change', (e) => this.onMotorChange(e));
-
-    // 电机分类切换
-    document.getElementById('motorCategory').addEventListener('change', (e) => this.onMotorCategoryChange(e));
-    this.populateMotorOptions(document.getElementById('motorCategory').value);
 
     // 禁止滚轮更改数字输入值
     document.querySelectorAll('.param-input[type="number"]').forEach(el => {
@@ -61,8 +52,7 @@ const UI = {
     });
   },
 
-  /** 清除之前推导字段的值（用户在运动参数输入框中打字时触发）
-   *  @param {string} [skipKey] - 不清除的字段 key（当前正在编辑的字段） */
+  /** 清除之前推导字段的值 */
   clearDerivedValues(skipKey) {
     if (this._lastDerivedKeys.length === 0) return;
     this.motionFields.forEach(({ id, key }) => {
@@ -84,7 +74,6 @@ const UI = {
         wrapper.classList.add('derived');
         el.classList.add('derived');
 
-        // 添加 "自动" 徽标
         const badge = document.createElement('span');
         badge.className = 'derived-badge';
         badge.textContent = '自动';
@@ -93,109 +82,10 @@ const UI = {
     });
   },
 
-  /** 根据电机分类动态填充电机型号下拉框 */
-  populateMotorOptions(category) {
-    const select = document.getElementById('motorSelect');
-    // 清空现有选项
-    select.innerHTML = '';
-
-    // 始终保留"自定义"选项
-    const customOpt = document.createElement('option');
-    customOpt.value = 'custom';
-    customOpt.textContent = '自定义（手动输入）';
-    select.appendChild(customOpt);
-
-    if (category && category !== 'custom') {
-      // 按 key 前缀过滤属于该分类的电机
-      Object.entries(Calculator.MOTORS).forEach(([key, motor]) => {
-        if (key.startsWith(category) && motor.name) {
-          const opt = document.createElement('option');
-          opt.value = key;
-          opt.textContent = motor.name;
-          select.appendChild(opt);
-        }
-      });
-    }
-
-    select.value = 'custom';
-  },
-
-  /** 重置电机参数输入框（清空值、移除样式、恢复可编辑） */
-  resetMotorFields() {
-    this.motorFieldIds.forEach(id => {
-      const el = document.getElementById(id);
-      const wrapper = el?.closest('.input-wrapper');
-      if (wrapper) wrapper.classList.remove('motor-filled');
-      el?.classList.remove('motor-filled');
-      if (id !== 'contCurrent' && id !== 'peakCurrent') {
-        el?.removeAttribute('readonly');
-      }
-      el.value = '';
-      const badge = el?.parentElement?.querySelector('.motor-badge');
-      if (badge) badge.remove();
-    });
-  },
-
-  /** 电机分类切换处理 */
-  onMotorCategoryChange(e) {
-    this.populateMotorOptions(e.target.value);
-    this.resetMotorFields();
-  },
-
-  /** 电机切换处理：自动填充电机参数 */
-  onMotorChange(e) {
-    const motorId = e.target.value;
-    const motor = Calculator.MOTORS[motorId];
-    if (!motor) return;
-
-    if (motorId === 'custom') {
-      this.resetMotorFields();
-      return;
-    }
-
-    // 自动填充电机参数
-    const fillMap = {
-      primaryMass: motor.coilMass,
-      forceConstant: motor.Kf,
-      contCurrent: motor.Icont,
-      peakCurrent: motor.Ipeak,
-      magAttraction: motor.Fmag,
-    };
-
-    this.motorFieldIds.forEach(id => {
-      const el = document.getElementById(id);
-      const wrapper = el?.closest('.input-wrapper');
-      if (!el || fillMap[id] === null || fillMap[id] === undefined) return;
-
-      // 设置值并标记为电机自动填充
-      el.value = fillMap[id];
-      el.setAttribute('readonly', true);
-      wrapper.classList.add('motor-filled');
-      el.classList.add('motor-filled');
-
-      // 添加 "电机" 徽标
-      let badge = wrapper.querySelector('.motor-badge');
-      if (!badge) {
-        badge = document.createElement('span');
-        badge.className = 'motor-badge';
-        wrapper.appendChild(badge);
-      }
-      badge.textContent = '✓';
-    });
-
-    // 在力常数上显示额定推力信息
-    const kfWrapper = document.getElementById('forceConstant')?.closest('.input-wrapper');
-    const fcBadge = kfWrapper?.querySelector('.motor-badge');
-    if (fcBadge && motor.Fcont) {
-      fcBadge.textContent = `${motor.Fcont}/${motor.Fpeak} N`;
-    } else if (fcBadge) {
-      fcBadge.textContent = '✓';
-    }
-  },
-
   getParams() {
     const g = (id) => parseFloat(document.getElementById(id).value) || 0;
     const raw = (id) => document.getElementById(id).value;
+    const motor = this._selectedMotor;
     return {
       stroke: g('stroke'),
       maxVelocity: g('maxVelocity'),
@@ -203,15 +93,14 @@ const UI = {
       motionTime: g('motionTime'),
       dwellTime: g('dwellTime'),
       loadMass: g('loadMass'),
-      primaryMass: g('primaryMass'),
+      primaryMass: motor ? motor.coilMass : 0,
       frictionCoeff: g('frictionCoeff'),
       inclineAngle: g('inclineAngle'),
       externalForce: g('externalForce'),
-      magAttraction: g('magAttraction'),
-      forceConstant: g('forceConstant'),
-      contCurrent: g('contCurrent'),
-      peakCurrent: g('peakCurrent'),
-      // 原始值（用于推导判断）
+      magAttraction: motor ? motor.Fmag : 0,
+      forceConstant: motor ? motor.Kf : 0,
+      contCurrent: motor ? motor.Icont : 0,
+      peakCurrent: motor ? motor.Ipeak : 0,
       _raw: {
         S: raw('stroke'),
         Vmax: raw('maxVelocity'),
@@ -243,14 +132,12 @@ const UI = {
       return;
     }
 
-    // 将推导结果写回输入框（保留2位小数）
     this.motionFields.forEach(({ id, key }) => {
       if (derived.derivedKeys.includes(key) && derived[key] !== undefined) {
         document.getElementById(id).value = derived[key].toFixed(2);
       }
     });
 
-    // 标记推导字段
     this.clearDerivedStyles();
     this.markDerived(derived.derivedKeys);
 
@@ -275,7 +162,15 @@ const UI = {
 
     this.showMotionSummary(result.profile);
     this.showThrustResults(result);
-    this.showCheckResults(result);
+
+    // 已选电机 → 显示详细校核；未选 → 隐藏校核
+    if (this._selectedMotor) {
+      this.showCheckResults(result);
+    } else {
+      document.getElementById('checkResults').parentElement.style.display = 'none';
+    }
+
+    // 始终显示自动匹配推荐
     this.showAutoMatch(result);
     this.drawCharts(result.profile, result.forces);
 
@@ -326,7 +221,6 @@ const UI = {
       { label: '重力分量 mg·sinθ', value: `${gravityForce.toFixed(2)} N` },
     ];
 
-    // 仅在配置电机时显示额定推力
     if (result.Fcont > 0 || result.Fpeak_rated > 0) {
       items.push(
         { label: '持续推力额定', value: `${result.Fcont.toFixed(2)} N` },
@@ -343,10 +237,11 @@ const UI = {
   },
 
   showCheckResults(result) {
+    const section = document.getElementById('checkResults').parentElement;
+    section.style.display = 'block';
     const el = document.getElementById('checkResults');
     const { rmsCheck, peakCheck } = result.checks;
 
-    // 未配置电机 → 仅显示提示
     if (!result._motorConfigured) {
       el.innerHTML = `
         <div class="check-item" style="background:#f1f3f4;border:1px solid #dadce0;">
@@ -354,27 +249,19 @@ const UI = {
             <span class="check-name">电机校核</span>
             <span class="check-badge" style="background:#5f6368;color:white;">未配置</span>
           </div>
-          <div class="check-detail">未选择电机，未进行额定推力校核。请选择一款电机或手动输入电机参数。</div>
+          <div class="check-detail">未选择电机，未进行额定推力校核。</div>
         </div>`;
       return;
     }
 
-    /**
-     * 校核颜色逻辑（基于余量）：
-     *   余量 = 额定推力 / 需求推力
-     *   ≥ 1.3 → 绿色 (safe, 余量充足)
-     *   ≥ 1.0 → 黄色 (warn, 满足但余量不足30%)
-     *   < 1.0 → 红色 (danger, 不满足)
-     */
     const getRatioClass = (usageRatio) => {
       if (usageRatio <= 0) return 'safe';
-      const margin = 1 / usageRatio; // 额定 / 需求
+      const margin = 1 / usageRatio;
       if (margin >= 1.3) return 'safe';
       if (margin >= 1.0) return 'warn';
       return 'danger';
     };
 
-    /** 根据余量返回级别（背景 + 外框 + 徽标同步） */
     const getLevelClass = (usageRatio) => {
       if (usageRatio <= 0) return 'level-green';
       const margin = 1 / usageRatio;
@@ -401,7 +288,6 @@ const UI = {
     ];
 
     el.innerHTML = checks.map(check => {
-      // 计算安全余量百分比
       let marginText = '';
       if (check.ratio > 0) {
         const marginPct = ((check.margin - 1) * 100).toFixed(0);
@@ -428,15 +314,14 @@ const UI = {
   showAutoMatch(result) {
     const section = document.getElementById('autoMatchSection');
     const el = document.getElementById('matchResults');
-    const category = document.getElementById('motorCategory').value;
 
-    // 如果已选自定义或无可用 Frms，隐藏
     if (!result.Frms || result.Frms <= 0) {
       section.style.display = 'none';
       return;
     }
 
-    const matched = Calculator.autoMatchMotors(result.Frms, result.Fpeak, category !== 'custom' ? category : null);
+    // 搜索全量电机，不限制分类
+    const matched = Calculator.autoMatchMotors(result.Frms, result.Fpeak);
 
     if (!matched.safe.length && !matched.warn.length) {
       section.style.display = 'none';
@@ -447,11 +332,11 @@ const UI = {
 
     let html = '';
 
-    // Tier 1: 余量充足 ≥30%（最节约排最前）
+    // Tier 1: 余量充足 ≥30%
     if (matched.safe.length > 0) {
       html += '<div style="margin-bottom:6px;font-size:0.82rem;color:var(--text-secondary);padding:2px 2px;">● 余量充足（推荐）</div>';
-      matched.safe.forEach((m, i) => {
-        html += this._buildMatchCard(m, i === 0);
+      matched.safe.forEach((m) => {
+        html += this._buildMatchCard(m);
       });
     }
 
@@ -459,42 +344,40 @@ const UI = {
     if (matched.warn.length > 0) {
       html += `<div style="margin-top:${matched.safe.length > 0 ? '10' : '0'}px;margin-bottom:6px;font-size:0.82rem;color:var(--text-secondary);padding:2px 2px;">● 满足但余量不足 30%</div>`;
       matched.warn.forEach(m => {
-        html += this._buildMatchCard(m, false);
+        html += this._buildMatchCard(m);
       });
     }
 
     el.innerHTML = html;
 
-    // 绑定点击事件
+    // 绑定点击事件 → 选择电机 → 重新计算
     el.querySelectorAll('.match-item').forEach(item => {
       item.addEventListener('click', () => {
         const motorKey = item.dataset.motorKey;
         if (!motorKey) return;
-        const prefix = motorKey.startsWith('map') ? 'map'
-                     : motorKey.startsWith('mai') ? 'mai'
-                     : motorKey.startsWith('lmc') ? 'lmc' : null;
-        if (prefix) {
-          document.getElementById('motorCategory').value = prefix;
-          this.populateMotorOptions(prefix);
-          const select = document.getElementById('motorSelect');
-          select.value = motorKey;
-          select.dispatchEvent(new Event('change'));
-        }
+        const motorData = Calculator.MOTORS[motorKey];
+        if (!motorData) return;
+        this._selectedMotor = motorData;
+        this.calculate();
       });
     });
   },
 
   /** 构建单条匹配卡片 HTML */
-  _buildMatchCard(motor, isBest) {
+  _buildMatchCard(motor) {
+    const isSelected = this._selectedMotor &&
+      this._selectedMotor.Kf === motor.Kf &&
+      this._selectedMotor.coilMass === motor.coilMass;
+
     const rmsPct = motor.rmsMargin >= 1 ? ((motor.rmsMargin - 1) * 100).toFixed(0) : '不足';
     const peakPct = motor.peakMargin >= 1 ? ((motor.peakMargin - 1) * 100).toFixed(0) : '不足';
     const rmsCls = motor.rmsMargin >= 1.3 ? 'safe' : motor.rmsMargin >= 1 ? 'warn' : 'danger';
     const peakCls = motor.peakMargin >= 1.3 ? 'safe' : motor.peakMargin >= 1 ? 'warn' : 'danger';
 
     return `
-      <div class="match-item ${isBest ? 'match-item-best' : ''}" data-motor-key="${motor.key}">
+      <div class="match-item ${isSelected ? 'match-item-best' : ''}" data-motor-key="${motor.key}">
         <div class="match-info">
-          <div class="match-name">${isBest ? '⭐ ' : ''}${motor.name}</div>
+          <div class="match-name">${motor.name}</div>
           <div class="match-detail">
             ${motor.Fcont} N / ${motor.Fpeak} N · 动子 ${motor.coilMass} kg
           </div>
@@ -502,7 +385,7 @@ const UI = {
         <div class="match-badges">
           <span class="match-badge match-badge-${rmsCls}">RMS ${rmsPct}%</span>
           <span class="match-badge match-badge-${peakCls}">峰值 ${peakPct}%</span>
-          <span class="match-select-btn">选择</span>
+          ${isSelected ? '<span class="match-select-btn" style="background:var(--primary);color:white;">已选</span>' : '<span class="match-select-btn">选择</span>'}
         </div>
       </div>`;
   },
