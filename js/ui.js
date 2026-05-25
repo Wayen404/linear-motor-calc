@@ -106,6 +106,8 @@ const UI = {
       forceConstant: motor ? motor.Kf : 0,
       contCurrent: motor ? motor.Icont : 0,
       peakCurrent: motor ? motor.Ipeak : 0,
+      motorFcont: motor ? motor.Fcont : 0,
+      motorFpeak: motor ? motor.Fpeak : 0,
       _raw: {
         S: raw('stroke'),
         Vmax: raw('maxVelocity'),
@@ -161,6 +163,8 @@ const UI = {
       forceConstant: raw.forceConstant,
       contCurrent: raw.contCurrent,
       peakCurrent: raw.peakCurrent,
+      motorFcont: raw.motorFcont,
+      motorFpeak: raw.motorFpeak,
     };
 
     const result = Calculator.run(params);
@@ -328,8 +332,8 @@ const UI = {
     // Tier 1: 余量充足 ≥30%
     if (matched.safe.length > 0) {
       html += '<div style="margin-bottom:6px;font-size:0.82rem;color:var(--text-secondary);padding:2px 2px;">● 余量充足（推荐）</div>';
-      matched.safe.forEach((m) => {
-        html += this._buildMatchCard(m);
+      matched.safe.forEach((m, i) => {
+        html += this._buildMatchCard(m, i === 0);
       });
     }
 
@@ -357,7 +361,7 @@ const UI = {
   },
 
   /** 构建单条匹配卡片 HTML */
-  _buildMatchCard(m) {
+  _buildMatchCard(m, isBest) {
     const isSelected = this._selectedMotor && m.name === this._selectedMotor.name;
 
     const rmsPct = m.rmsMargin >= 1 ? ((m.rmsMargin - 1) * 100).toFixed(0) : '不足';
@@ -368,7 +372,7 @@ const UI = {
     return `
       <div class="match-item ${isSelected ? 'match-item-best' : ''}" data-motor-key="${m.key}">
         <div class="match-info">
-          <div class="match-name">${m.name}</div>
+          <div class="match-name">${m.name}${isBest ? ' <span class="best-badge">最佳推荐</span>' : ''}</div>
           <div class="match-detail">
             需求 ${m.Frms.toFixed(1)}/${m.Fpeak.toFixed(1)} N · 额定 ${m.Fcont}/${m.Fpeak_rated} N · 动子 ${m.coilMass} kg
           </div>

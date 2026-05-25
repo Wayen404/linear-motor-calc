@@ -352,8 +352,8 @@ const Calculator = {
       const Frms = this.calcRMSThrust(forces, profile.t1, profile.t2, profile.t3, profile.t4) + _extF;
       const Fpeak = this.calcPeakThrust(forces) + _extF;
 
-      const Fcont = motor.Kf * motor.Icont;
-      const Fpeak_rated = motor.Kf * motor.Ipeak;
+      const Fcont = motor.Fcont;
+      const Fpeak_rated = motor.Fpeak;
       const rmsMargin = Fcont / Frms;
       const peakMargin = Fpeak_rated / Fpeak;
       const score = Math.min(rmsMargin, peakMargin);
@@ -416,8 +416,8 @@ const Calculator = {
     const Frms = this.calcRMSThrust(forces, profile.t1, profile.t2, profile.t3, profile.t4) + _externalForce;
     const Fpeak = this.calcPeakThrust(forces) + _externalForce;
 
-    const Fcont = params.forceConstant * params.contCurrent;
-    const Fpeak_rated = params.forceConstant * params.peakCurrent;
+    const Fcont = params.motorFcont > 0 ? params.motorFcont : params.forceConstant * params.contCurrent;
+    const Fpeak_rated = params.motorFpeak > 0 ? params.motorFpeak : params.forceConstant * params.peakCurrent;
     const _motorConfigured = params.forceConstant > 0 && (params.contCurrent > 0 || params.peakCurrent > 0);
 
     const checks = this.checkRatings(Frms, Fpeak, Fcont, Fpeak_rated);
