@@ -98,6 +98,29 @@
         </div>
       </div>
 
+      <h2 class="panel-title">电机选型 <span class="hint">选择分类后自动匹配合适电机</span></h2>
+      <div class="params-grid" id="motorSelectors">
+        <div class="param-group" style="grid-column: 1 / -1;">
+          <label class="param-label">品牌</label>
+          <div class="input-wrapper">
+            <select id="motorBrand" class="motor-select">
+              <option value="inovance">汇川 (Inovance)</option>
+            </select>
+          </div>
+        </div>
+        <div class="param-group" style="grid-column: 1 / -1;">
+          <label class="param-label">分类筛选</label>
+          <div class="input-wrapper">
+            <select id="motorCategory" class="motor-select">
+              <option value="all">全部</option>
+              <option value="map">有铁芯（MAP 系列）</option>
+              <option value="mai">无铁芯（MAI 系列）</option>
+              <option value="lmc">直线模组（LMC 系列）</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <button id="calcBtn" class="calc-btn">开始计算</button>
     </section>
 
@@ -149,6 +172,6 @@
   <script src="js/chart.umd.min.js"></script>
   <script src="js/calculator.js?v=27"></script>
   <script src="js/chart.js?v=20"></script>
-  <script src="js/ui.js?v=34"></script>
+  <script src="js/ui.js?v=35"></script>
 </body>
 </html>

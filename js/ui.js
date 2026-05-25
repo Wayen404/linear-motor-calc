@@ -34,6 +34,11 @@ const UI = {
       });
     });
 
+    // 分类切换时清除已选电机
+    document.getElementById('motorCategory').addEventListener('change', () => {
+      this._selectedMotor = null;
+    });
+
     // 禁止滚轮更改数字输入值
     document.querySelectorAll('.param-input[type="number"]').forEach(el => {
       el.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
@@ -320,8 +325,10 @@ const UI = {
       return;
     }
 
-    // 搜索全量电机，不限制分类
-    const matched = Calculator.autoMatchMotors(result.Frms, result.Fpeak);
+    // 按分类筛选
+    const category = document.getElementById('motorCategory').value;
+    const catFilter = category !== 'all' ? category : null;
+    const matched = Calculator.autoMatchMotors(result.Frms, result.Fpeak, catFilter);
 
     if (!matched.safe.length && !matched.warn.length) {
       section.style.display = 'none';
