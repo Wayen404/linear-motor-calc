@@ -148,30 +148,39 @@ const UI = {
     this.clearDerivedStyles();
     this.markDerived(derived.derivedKeys);
 
-    // 第2步：用完整的参数运行计算
+    // 第2步：自动选择最佳电机（用在后续完整计算中）
+    this._autoSelectBestMotor({
+      loadMass: raw.loadMass,
+      frictionCoeff: raw.frictionCoeff,
+      inclineAngle: raw.inclineAngle,
+      externalForce: raw.externalForce,
+    }, derived);
+
+    // 第3步：用完整参数（含电机数据）运行计算
+    const full = this.getParams();
     const params = {
       stroke: derived.S,
       maxVelocity: derived.Vmax,
       acceleration: derived.a,
-      dwellTime: raw.dwellTime,
-      loadMass: raw.loadMass,
-      primaryMass: raw.primaryMass,
-      frictionCoeff: raw.frictionCoeff,
-      inclineAngle: raw.inclineAngle,
-      externalForce: raw.externalForce,
-      magAttraction: raw.magAttraction,
-      forceConstant: raw.forceConstant,
-      contCurrent: raw.contCurrent,
-      peakCurrent: raw.peakCurrent,
-      motorFcont: raw.motorFcont,
-      motorFpeak: raw.motorFpeak,
+      dwellTime: full.dwellTime,
+      loadMass: full.loadMass,
+      primaryMass: full.primaryMass,
+      frictionCoeff: full.frictionCoeff,
+      inclineAngle: full.inclineAngle,
+      externalForce: full.externalForce,
+      magAttraction: full.magAttraction,
+      forceConstant: full.forceConstant,
+      contCurrent: full.contCurrent,
+      peakCurrent: full.peakCurrent,
+      motorFcont: full.motorFcont,
+      motorFpeak: full.motorFpeak,
     };
 
     const result = Calculator.run(params);
 
+    this.showAutoMatch(result.profile, raw);
     this.showMotionSummary(result.profile);
     this.showThrustResults(result);
-    this.showAutoMatch(result.profile, raw);
     this.drawCharts(result.profile, result.forces);
 
     const panel = document.getElementById('resultPanel');
@@ -346,31 +355,17 @@ const UI = {
     }
 
     el.innerHTML = html;
-
-    // 绑定点击事件 → 选择电机 → 重新计算
-    el.querySelectorAll('.match-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const motorKey = item.dataset.motorKey;
-        if (!motorKey) return;
-        const motorData = Calculator.MOTORS[motorKey];
-        if (!motorData) return;
-        this._selectedMotor = motorData;
-        this.calculate();
-      });
-    });
   },
 
   /** 构建单条匹配卡片 HTML */
   _buildMatchCard(m, isBest) {
-    const isSelected = this._selectedMotor && m.name === this._selectedMotor.name;
-
     const rmsPct = m.rmsMargin >= 1 ? ((m.rmsMargin - 1) * 100).toFixed(0) : '不足';
     const peakPct = m.peakMargin >= 1 ? ((m.peakMargin - 1) * 100).toFixed(0) : '不足';
     const rmsCls = m.rmsMargin >= 1.3 ? 'safe' : m.rmsMargin >= 1 ? 'warn' : 'danger';
     const peakCls = m.peakMargin >= 1.3 ? 'safe' : m.peakMargin >= 1 ? 'warn' : 'danger';
 
     return `
-      <div class="match-item ${isSelected ? 'match-item-best' : ''}" data-motor-key="${m.key}">
+      <div class="match-item" data-motor-key="${m.key}">
         <div class="match-info">
           <div class="match-name">${m.name}${isBest ? ' <span class="best-badge">最佳推荐</span>' : ''}</div>
           <div class="match-detail">
@@ -380,9 +375,23 @@ const UI = {
         <div class="match-badges">
           <span class="match-badge match-badge-${rmsCls}">额定 ${rmsPct}%</span>
           <span class="match-badge match-badge-${peakCls}">峰值 ${peakPct}%</span>
-          ${isSelected ? '<span class="match-select-btn" style="background:var(--primary);color:white;">已选</span>' : '<span class="match-select-btn">选择</span>'}
         </div>
       </div>`;
+  },
+
+  /** 自动选择匹配的最佳电机（无用户交互） */
+  _autoSelectBestMotor(load, derived) {
+    const category = document.getElementById('motorCategory').value;
+    const catFilter = category !== 'all' ? category : null;
+    const tDwell = parseFloat(document.getElementById('dwellTime').value) || 0;
+    const prof = Calculator.calcMotionProfile(derived.S, derived.Vmax, derived.a, tDwell);
+    const matched = Calculator.autoMatchMotors(prof, load, catFilter);
+    const best = matched.safe.length > 0 ? matched.safe[0]
+               : matched.warn.length > 0 ? matched.warn[0]
+               : null;
+    if (best) {
+      this._selectedMotor = Calculator.MOTORS[best.key];
+    }
   },
 
   drawCharts(profile, forces) {
