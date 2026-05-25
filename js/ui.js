@@ -438,42 +438,52 @@ const UI = {
 
     const matched = Calculator.autoMatchMotors(result.Frms, result.Fpeak, category !== 'custom' ? category : null);
 
-    if (!matched.top.length && !matched.others.length) {
+    if (!matched.safe.length && !matched.warn.length && !matched.fail.length) {
       section.style.display = 'none';
       return;
     }
 
     section.style.display = 'block';
 
-    const best = matched.top.length > 0 ? matched.top[0] : matched.others[0];
-    const rest = matched.top.length > 0 ? matched.top.slice(1) : [];
+    let html = '';
 
-    // 最佳推荐
-    let html = this._buildMatchCard(best, true);
+    // Tier 1: 余量充足 ≥30%（最节约排最前）
+    if (matched.safe.length > 0) {
+      html += '<div style="margin-bottom:6px;font-size:0.82rem;color:var(--text-secondary);padding:2px 2px;">● 余量充足（推荐）</div>';
+      matched.safe.forEach((m, i) => {
+        html += this._buildMatchCard(m, i === 0);
+      });
+    }
 
-    // 其他推荐
-    if (rest.length > 0) {
-      html += '<div style="margin-top:6px;font-size:0.78rem;color:var(--text-secondary);padding:4px 2px;">其他可选型号</div>';
-      rest.forEach(m => {
+    // Tier 2: 满足但余量不足 30%
+    if (matched.warn.length > 0) {
+      html += `<div style="margin-top:${matched.safe.length > 0 ? '10' : '0'}px;margin-bottom:6px;font-size:0.82rem;color:var(--text-secondary);padding:2px 2px;">● 满足但余量不足 30%</div>`;
+      matched.warn.forEach(m => {
+        html += this._buildMatchCard(m, false);
+      });
+    }
+
+    // Tier 3: 不满足
+    if (matched.fail.length > 0) {
+      html += `<div style="margin-top:${matched.safe.length > 0 || matched.warn.length > 0 ? '10' : '0'}px;margin-bottom:6px;font-size:0.82rem;color:var(--text-secondary);padding:2px 2px;">● 不满足需求</div>`;
+      matched.fail.forEach(m => {
         html += this._buildMatchCard(m, false);
       });
     }
 
     el.innerHTML = html;
 
-    // 绑定点击事件：选择此电机
+    // 绑定点击事件
     el.querySelectorAll('.match-item').forEach(item => {
       item.addEventListener('click', () => {
         const motorKey = item.dataset.motorKey;
         if (!motorKey) return;
-        // 找到对应的 category 前缀
         const prefix = motorKey.startsWith('map') ? 'map'
                      : motorKey.startsWith('mai') ? 'mai'
                      : motorKey.startsWith('lmc') ? 'lmc' : null;
         if (prefix) {
           document.getElementById('motorCategory').value = prefix;
           this.populateMotorOptions(prefix);
-          // 选中推荐电机并触发 change 填参
           const select = document.getElementById('motorSelect');
           select.value = motorKey;
           select.dispatchEvent(new Event('change'));

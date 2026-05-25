@@ -363,17 +363,20 @@ const Calculator = {
       });
     });
 
-    // 按评分升序排列（最接近需求的排最前，通过的优先于未通过的）
-    all.sort((a, b) => {
-      if (a.score >= 1 && b.score < 1) return -1;
-      if (a.score < 1 && b.score >= 1) return 1;
-      return a.score - b.score;
-    });
+    // 分三档排序：
+    //   safe  (≥30%余量) → 评分升序（最节约的排最前）
+    //   warn  (≥0%余量)  → 评分升序
+    //   fail  (不满足)    → 评分降序（最接近的排最前）
+    const safe = all.filter(m => m.score >= 1.3).sort((a, b) => a.score - b.score);
+    const warn = all.filter(m => m.score >= 1.0 && m.score < 1.3).sort((a, b) => a.score - b.score);
+    const fail = all.filter(m => m.score < 1.0).sort((a, b) => b.score - a.score);
 
     return {
-      top: all.filter(m => m.score >= 1),
-      others: all.filter(m => m.score < 1),
-      all,
+      safe,   // 最佳推荐：余量充足且最节约
+      warn,   // 次选：满足但余量不足30%
+      fail,   // 不满足
+      all: [...safe, ...warn, ...fail],
+      top: safe.length > 0 ? safe : warn, // 综合最佳档
     };
   },
 
