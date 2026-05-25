@@ -493,8 +493,8 @@ body {
 }
 
 .match-item-best {
-  border-color: var(--primary);
-  background: #e8f0fe;
+  border-color: var(--success);
+  background: #e6f4ea;
 }
 
 .match-info {

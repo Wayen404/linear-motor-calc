@@ -365,7 +365,7 @@ const UI = {
     const peakCls = m.peakMargin >= 1.3 ? 'safe' : m.peakMargin >= 1 ? 'warn' : 'danger';
 
     return `
-      <div class="match-item" data-motor-key="${m.key}">
+      <div class="match-item${isBest ? ' match-item-best' : ''}" data-motor-key="${m.key}">
         <div class="match-info">
           <div class="match-name">${m.name}${isBest ? ' <span class="best-badge">最佳推力匹配</span>' : ''}</div>
           <div class="match-detail">
