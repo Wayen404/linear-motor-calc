@@ -328,45 +328,58 @@ const Calculator = {
   },
 
   /**
-   * 自动匹配推荐电机
-   * @param {number} Frms - 需求的 RMS 推力
-   * @param {number} Fpeak - 需求的峰值推力
+   * 自动匹配推荐电机（每款电机独立计算，含自身质量与磁吸力）
+   * @param {Object} profile - 运动曲线 { t1, t2, t3, t4, accel }
+   * @param {Object} load   - 负载参数 { loadMass, frictionCoeff, inclineAngle, externalForce }
    * @param {string} [category] - 可选分类过滤 (map/mai/lmc)
-   * @returns {{ top: Array, others: Array, all: Array }}
+   * @returns {{ safe: Array, warn: Array, fail: Array, all: Array }}
    */
-  autoMatchMotors(Frms, Fpeak, category) {
+  autoMatchMotors(profile, load, category) {
     const all = [];
 
     Object.entries(this.MOTORS).forEach(([key, motor]) => {
       if (key === 'custom' || !motor.Fcont || !motor.Fpeak) return;
       if (category && !key.startsWith(category)) return;
 
-      const rmsMargin = motor.Fcont / Frms;
-      const peakMargin = motor.Fpeak / Fpeak;
-      const score = Math.min(rmsMargin, peakMargin); // 短板决定评分
+      // 用该电机的质量 + 磁吸力完整计算
+      const totalMass = load.loadMass + motor.coilMass;
+      const forces = this.calcThrustForces(
+        totalMass, profile.accel,
+        load.frictionCoeff, load.inclineAngle, motor.Fmag
+      );
+
+      const _extF = load.externalForce || 0;
+      const Frms = this.calcRMSThrust(forces, profile.t1, profile.t2, profile.t3, profile.t4) + _extF;
+      const Fpeak = this.calcPeakThrust(forces) + _extF;
+
+      const Fcont = motor.Kf * motor.Icont;
+      const Fpeak_rated = motor.Kf * motor.Ipeak;
+      const rmsMargin = Fcont / Frms;
+      const peakMargin = Fpeak_rated / Fpeak;
+      const score = Math.min(rmsMargin, peakMargin);
 
       all.push({
         key,
         name: motor.name,
-        Fcont: motor.Fcont,
-        Fpeak: motor.Fpeak,
+        Fcont,
+        Fpeak_rated,
+        Frms,
+        Fpeak,
         rmsMargin,
         peakMargin,
         score,
         rmsPass: rmsMargin >= 1,
         peakPass: peakMargin >= 1,
         coilMass: motor.coilMass,
-        Kf: motor.Kf,
-        Icont: motor.Icont,
-        Ipeak: motor.Ipeak,
         Fmag: motor.Fmag,
+        Fa: forces.Fa,
+        Fc: forces.Fc,
+        Fd: forces.Fd,
       });
     });
 
-    // 分三档排序：
-    //   safe  (≥30%余量) → 综合评分升序（最节约的排最前）
-    //   warn  (≥0%余量)  → 综合评分升序
-    //   fail  (不满足)    → 评分降序（最接近的排最前）
+    // 分三档排序：safe ≥30% | warn ≥0% | fail <0%
+    // 每档内按综合评分升序（最节约排最前）
     const byThrift = (a, b) => (a.rmsMargin + a.peakMargin) - (b.rmsMargin + b.peakMargin);
     const byClosest = (a, b) => b.score - a.score;
 
@@ -375,11 +388,11 @@ const Calculator = {
     const fail = all.filter(m => m.score < 1.0).sort(byClosest);
 
     return {
-      safe,   // 最佳推荐：余量充足且最节约
-      warn,   // 次选：满足但余量不足30%
-      fail,   // 不满足
+      safe,
+      warn,
+      fail,
       all: [...safe, ...warn, ...fail],
-      top: safe.length > 0 ? safe : warn, // 综合最佳档
+      top: safe.length > 0 ? safe : warn,
     };
   },
 

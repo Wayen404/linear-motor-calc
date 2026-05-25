@@ -167,16 +167,7 @@ const UI = {
 
     this.showMotionSummary(result.profile);
     this.showThrustResults(result);
-
-    // 已选电机 → 显示详细校核；未选 → 隐藏校核
-    if (this._selectedMotor) {
-      this.showCheckResults(result);
-    } else {
-      document.getElementById('checkResults').parentElement.style.display = 'none';
-    }
-
-    // 始终显示自动匹配推荐
-    this.showAutoMatch(result);
+    this.showAutoMatch(result.profile, raw);
     this.drawCharts(result.profile, result.forces);
 
     const panel = document.getElementById('resultPanel');
@@ -315,20 +306,15 @@ const UI = {
     }).join('');
   },
 
-  /** 显示自动匹配推荐 */
-  showAutoMatch(result) {
+  /** 显示自动匹配推荐（每款电机独立计算，含自身质量与磁吸力） */
+  showAutoMatch(profile, load) {
     const section = document.getElementById('autoMatchSection');
     const el = document.getElementById('matchResults');
-
-    if (!result.Frms || result.Frms <= 0) {
-      section.style.display = 'none';
-      return;
-    }
 
     // 按分类筛选
     const category = document.getElementById('motorCategory').value;
     const catFilter = category !== 'all' ? category : null;
-    const matched = Calculator.autoMatchMotors(result.Frms, result.Fpeak, catFilter);
+    const matched = Calculator.autoMatchMotors(profile, load, catFilter);
 
     if (!matched.safe.length && !matched.warn.length) {
       section.style.display = 'none';
@@ -371,26 +357,24 @@ const UI = {
   },
 
   /** 构建单条匹配卡片 HTML */
-  _buildMatchCard(motor) {
-    const isSelected = this._selectedMotor &&
-      this._selectedMotor.Kf === motor.Kf &&
-      this._selectedMotor.coilMass === motor.coilMass;
+  _buildMatchCard(m) {
+    const isSelected = this._selectedMotor && m.name === this._selectedMotor.name;
 
-    const rmsPct = motor.rmsMargin >= 1 ? ((motor.rmsMargin - 1) * 100).toFixed(0) : '不足';
-    const peakPct = motor.peakMargin >= 1 ? ((motor.peakMargin - 1) * 100).toFixed(0) : '不足';
-    const rmsCls = motor.rmsMargin >= 1.3 ? 'safe' : motor.rmsMargin >= 1 ? 'warn' : 'danger';
-    const peakCls = motor.peakMargin >= 1.3 ? 'safe' : motor.peakMargin >= 1 ? 'warn' : 'danger';
+    const rmsPct = m.rmsMargin >= 1 ? ((m.rmsMargin - 1) * 100).toFixed(0) : '不足';
+    const peakPct = m.peakMargin >= 1 ? ((m.peakMargin - 1) * 100).toFixed(0) : '不足';
+    const rmsCls = m.rmsMargin >= 1.3 ? 'safe' : m.rmsMargin >= 1 ? 'warn' : 'danger';
+    const peakCls = m.peakMargin >= 1.3 ? 'safe' : m.peakMargin >= 1 ? 'warn' : 'danger';
 
     return `
-      <div class="match-item ${isSelected ? 'match-item-best' : ''}" data-motor-key="${motor.key}">
+      <div class="match-item ${isSelected ? 'match-item-best' : ''}" data-motor-key="${m.key}">
         <div class="match-info">
-          <div class="match-name">${motor.name}</div>
+          <div class="match-name">${m.name}</div>
           <div class="match-detail">
-            ${motor.Fcont} N / ${motor.Fpeak} N · 动子 ${motor.coilMass} kg
+            需求 ${m.Frms.toFixed(1)}/${m.Fpeak.toFixed(1)} N · 额定 ${m.Fcont}/${m.Fpeak_rated} N · 动子 ${m.coilMass} kg
           </div>
         </div>
         <div class="match-badges">
-          <span class="match-badge match-badge-${rmsCls}">RMS ${rmsPct}%</span>
+          <span class="match-badge match-badge-${rmsCls}">额定 ${rmsPct}%</span>
           <span class="match-badge match-badge-${peakCls}">峰值 ${peakPct}%</span>
           ${isSelected ? '<span class="match-select-btn" style="background:var(--primary);color:white;">已选</span>' : '<span class="match-select-btn">选择</span>'}
         </div>
