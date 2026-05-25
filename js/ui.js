@@ -87,98 +87,91 @@ const UI = {
     });
   },
 
-  getParams() {
-    const g = (id) => parseFloat(document.getElementById(id).value) || 0;
-    const raw = (id) => document.getElementById(id).value;
-    const motor = this._selectedMotor;
-    return {
-      stroke: g('stroke'),
-      maxVelocity: g('maxVelocity'),
-      acceleration: g('acceleration'),
-      motionTime: g('motionTime'),
-      dwellTime: g('dwellTime'),
-      loadMass: g('loadMass'),
-      primaryMass: motor ? motor.coilMass : 0,
-      frictionCoeff: g('frictionCoeff'),
-      inclineAngle: g('inclineAngle'),
-      externalForce: g('externalForce'),
-      magAttraction: motor ? motor.Fmag : 0,
-      forceConstant: motor ? motor.Kf : 0,
-      contCurrent: motor ? motor.Icont : 0,
-      peakCurrent: motor ? motor.Ipeak : 0,
-      motorFcont: motor ? motor.Fcont : 0,
-      motorFpeak: motor ? motor.Fpeak : 0,
-      _raw: {
-        S: raw('stroke'),
-        Vmax: raw('maxVelocity'),
-        a: raw('acceleration'),
-        t_run: raw('motionTime'),
-      },
-    };
-  },
-
   calculate() {
-    const raw = this.getParams();
+    // 读取所有输入值（直接从 DOM）
+    const read = (id) => document.getElementById(id).value;
+    const g = (id) => parseFloat(read(id)) || 0;
 
     // 验证必填项
-    if (document.getElementById('loadMass').value === '' || raw.loadMass <= 0) {
+    if (read('loadMass') === '' || g('loadMass') <= 0) {
       alert('请填写负载质量 M');
       document.getElementById('loadMass').focus();
       return;
     }
-    if (document.getElementById('frictionCoeff').value === '') {
+    if (read('frictionCoeff') === '') {
       alert('请填写摩擦系数 μ');
       document.getElementById('frictionCoeff').focus();
       return;
     }
 
     // 第1步：推导缺失的运动参数
-    const derived = Calculator.deriveMissingParam(raw._raw);
+    const derived = Calculator.deriveMissingParam({
+      S: read('stroke'),
+      Vmax: read('maxVelocity'),
+      a: read('acceleration'),
+      t_run: read('motionTime'),
+    });
     if (derived.error) {
       alert(derived.error);
       return;
     }
 
+    // 将推导值写入 DOM（如有）
     this.motionFields.forEach(({ id, key }) => {
       if (derived.derivedKeys.includes(key) && derived[key] !== undefined) {
         document.getElementById(id).value = derived[key].toFixed(2);
       }
     });
-
     this.clearDerivedStyles();
     this.markDerived(derived.derivedKeys);
 
-    // 第2步：自动选择最佳电机（用在后续完整计算中）
-    this._autoSelectBestMotor({
-      loadMass: raw.loadMass,
-      frictionCoeff: raw.frictionCoeff,
-      inclineAngle: raw.inclineAngle,
-      externalForce: raw.externalForce,
-    }, derived);
+    // 第2步：自动选择最佳电机
+    const tDwell = g('dwellTime');
+    const profile = Calculator.calcMotionProfile(derived.S, derived.Vmax, derived.a, tDwell);
+    const matched = Calculator.autoMatchMotors(profile, {
+      loadMass: g('loadMass'),
+      frictionCoeff: g('frictionCoeff'),
+      inclineAngle: g('inclineAngle'),
+      externalForce: g('externalForce'),
+    }, document.getElementById('motorCategory').value === 'all' ? null : document.getElementById('motorCategory').value);
+    this._selectedMotor = null;
+    const best = matched.safe.length > 0 ? matched.safe[0]
+               : matched.warn.length > 0 ? matched.warn[0]
+               : null;
+    const motor = best ? Calculator.MOTORS[best.key] : null;
+    if (motor) this._selectedMotor = motor;
 
-    // 第3步：用完整参数（含电机数据）运行计算
-    const full = this.getParams();
-    const params = {
-      stroke: derived.S,
-      maxVelocity: derived.Vmax,
-      acceleration: derived.a,
-      dwellTime: full.dwellTime,
-      loadMass: full.loadMass,
-      primaryMass: full.primaryMass,
-      frictionCoeff: full.frictionCoeff,
-      inclineAngle: full.inclineAngle,
-      externalForce: full.externalForce,
-      magAttraction: full.magAttraction,
-      forceConstant: full.forceConstant,
-      contCurrent: full.contCurrent,
-      peakCurrent: full.peakCurrent,
-      motorFcont: full.motorFcont,
-      motorFpeak: full.motorFpeak,
+    // 第3步：执行完整计算
+    const totalMass = g('loadMass') + (motor ? motor.coilMass : 0);
+    const forces = Calculator.calcThrustForces(
+      totalMass, derived.a,
+      g('frictionCoeff'), g('inclineAngle'),
+      motor ? motor.Fmag : 0
+    );
+    const _extF = g('externalForce');
+    const Frms = Calculator.calcRMSThrust(forces, profile.t1, profile.t2, profile.t3, profile.t4) + _extF;
+    const Fpeak = Calculator.calcPeakThrust(forces) + _extF;
+    const Fcont = motor ? (motor.Fcont || motor.Kf * motor.Icont) : 0;
+    const Fpeak_rated = motor ? (motor.Fpeak || motor.Kf * motor.Ipeak) : 0;
+    const _motorConfigured = !!motor;
+
+    const result = {
+      profile,
+      forces,
+      Frms,
+      Fpeak,
+      Fcont,
+      Fpeak_rated,
+      _motorConfigured,
+      checks: Calculator.checkRatings(Frms, Fpeak, Fcont, Fpeak_rated),
     };
 
-    const result = Calculator.run(params);
-
-    this.showAutoMatch(result.profile, raw);
+    this.showAutoMatch(result.profile, {
+      loadMass: g('loadMass'),
+      frictionCoeff: g('frictionCoeff'),
+      inclineAngle: g('inclineAngle'),
+      externalForce: g('externalForce'),
+    });
     this.showMotionSummary(result.profile);
     this.showThrustResults(result);
     this.drawCharts(result.profile, result.forces);
@@ -377,21 +370,6 @@ const UI = {
           <span class="match-badge match-badge-${peakCls}">峰值 ${peakPct}%</span>
         </div>
       </div>`;
-  },
-
-  /** 自动选择匹配的最佳电机（无用户交互） */
-  _autoSelectBestMotor(load, derived) {
-    const category = document.getElementById('motorCategory').value;
-    const catFilter = category !== 'all' ? category : null;
-    const tDwell = parseFloat(document.getElementById('dwellTime').value) || 0;
-    const prof = Calculator.calcMotionProfile(derived.S, derived.Vmax, derived.a, tDwell);
-    const matched = Calculator.autoMatchMotors(prof, load, catFilter);
-    const best = matched.safe.length > 0 ? matched.safe[0]
-               : matched.warn.length > 0 ? matched.warn[0]
-               : null;
-    if (best) {
-      this._selectedMotor = Calculator.MOTORS[best.key];
-    }
   },
 
   drawCharts(profile, forces) {
