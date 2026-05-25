@@ -276,6 +276,7 @@ const UI = {
     this.showMotionSummary(result.profile);
     this.showThrustResults(result);
     this.showCheckResults(result);
+    this.showAutoMatch(result);
     this.drawCharts(result.profile, result.forces);
 
     const panel = document.getElementById('resultPanel');
@@ -421,6 +422,87 @@ const UI = {
         </div>
       </div>`;
     }).join('');
+  },
+
+  /** 显示自动匹配推荐 */
+  showAutoMatch(result) {
+    const section = document.getElementById('autoMatchSection');
+    const el = document.getElementById('matchResults');
+    const category = document.getElementById('motorCategory').value;
+
+    // 如果已选自定义或无可用 Frms，隐藏
+    if (!result.Frms || result.Frms <= 0) {
+      section.style.display = 'none';
+      return;
+    }
+
+    const matched = Calculator.autoMatchMotors(result.Frms, result.Fpeak, category !== 'custom' ? category : null);
+
+    if (!matched.top.length && !matched.others.length) {
+      section.style.display = 'none';
+      return;
+    }
+
+    section.style.display = 'block';
+
+    const best = matched.top.length > 0 ? matched.top[0] : matched.others[0];
+    const rest = matched.top.length > 0 ? matched.top.slice(1) : [];
+
+    // 最佳推荐
+    let html = this._buildMatchCard(best, true);
+
+    // 其他推荐
+    if (rest.length > 0) {
+      html += '<div style="margin-top:6px;font-size:0.78rem;color:var(--text-secondary);padding:4px 2px;">其他可选型号</div>';
+      rest.forEach(m => {
+        html += this._buildMatchCard(m, false);
+      });
+    }
+
+    el.innerHTML = html;
+
+    // 绑定点击事件：选择此电机
+    el.querySelectorAll('.match-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const motorKey = item.dataset.motorKey;
+        if (!motorKey) return;
+        // 找到对应的 category 前缀
+        const prefix = motorKey.startsWith('map') ? 'map'
+                     : motorKey.startsWith('mai') ? 'mai'
+                     : motorKey.startsWith('lmc') ? 'lmc' : null;
+        if (prefix) {
+          document.getElementById('motorCategory').value = prefix;
+          this.populateMotorOptions(prefix);
+          // 选中推荐电机并触发 change 填参
+          const select = document.getElementById('motorSelect');
+          select.value = motorKey;
+          select.dispatchEvent(new Event('change'));
+        }
+      });
+    });
+  },
+
+  /** 构建单条匹配卡片 HTML */
+  _buildMatchCard(motor, isBest) {
+    const rmsPct = motor.rmsMargin >= 1 ? ((motor.rmsMargin - 1) * 100).toFixed(0) : '不足';
+    const peakPct = motor.peakMargin >= 1 ? ((motor.peakMargin - 1) * 100).toFixed(0) : '不足';
+    const rmsCls = motor.rmsMargin >= 1.3 ? 'safe' : motor.rmsMargin >= 1 ? 'warn' : 'danger';
+    const peakCls = motor.peakMargin >= 1.3 ? 'safe' : motor.peakMargin >= 1 ? 'warn' : 'danger';
+
+    return `
+      <div class="match-item ${isBest ? 'match-item-best' : ''}" data-motor-key="${motor.key}">
+        <div class="match-info">
+          <div class="match-name">${isBest ? '⭐ ' : ''}${motor.name}</div>
+          <div class="match-detail">
+            ${motor.Fcont} N / ${motor.Fpeak} N · 动子 ${motor.coilMass} kg
+          </div>
+        </div>
+        <div class="match-badges">
+          <span class="match-badge match-badge-${rmsCls}">RMS ${rmsPct}%</span>
+          <span class="match-badge match-badge-${peakCls}">峰值 ${peakPct}%</span>
+          <span class="match-select-btn">选择</span>
+        </div>
+      </div>`;
   },
 
   drawCharts(profile, forces) {

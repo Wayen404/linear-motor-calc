@@ -464,6 +464,104 @@ body {
 .progress-fill.warn { background: var(--warning); }
 .progress-fill.danger { background: var(--danger); }
 
+/* === 自动匹配推荐 === */
+.match-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.match-item {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.match-item:hover {
+  border-color: var(--primary);
+  box-shadow: 0 1px 6px rgba(26,115,232,0.15);
+}
+
+.match-item:active {
+  transform: scale(0.99);
+}
+
+.match-item-best {
+  border-color: var(--primary);
+  background: #e8f0fe;
+}
+
+.match-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.match-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.match-detail {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.match-badges {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.match-badge {
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.match-badge-safe {
+  background: #e6f4ea;
+  color: #137333;
+}
+
+.match-badge-warn {
+  background: #fef7e0;
+  color: #b06000;
+}
+
+.match-badge-danger {
+  background: #fce8e6;
+  color: #c5221f;
+}
+
+.match-select-btn {
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--primary);
+  background: white;
+  color: var(--primary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.match-select-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
 /* === Charts === */
 .chart-container {
   margin-bottom: 16px;
@@ -604,6 +702,12 @@ body {
 
   .check-item {
     padding: 10px;
+  }
+
+  .match-item {
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .check-name {

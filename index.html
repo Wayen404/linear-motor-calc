@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="icons/icon-152.png">
   <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
-  <link rel="stylesheet" href="css/style.css?v=25">
+  <link rel="stylesheet" href="css/style.css?v=26">
 </head>
 <body>
   <header class="header">
@@ -101,6 +101,14 @@
       <h2 class="panel-title">电机参数 <span class="hint">选电机自动填入，或手动自定义</span></h2>
       <div class="params-grid" id="motorParams">
         <div class="param-group" style="grid-column: 1 / -1;">
+          <label class="param-label">品牌</label>
+          <div class="input-wrapper">
+            <select id="motorBrand" class="motor-select">
+              <option value="inovance">汇川 (Inovance)</option>
+            </select>
+          </div>
+        </div>
+        <div class="param-group" style="grid-column: 1 / -1;">
           <label class="param-label">电机分类</label>
           <div class="input-wrapper">
             <select id="motorCategory" class="motor-select">
@@ -181,6 +189,12 @@
         <div class="check-results" id="checkResults"></div>
       </div>
 
+      <!-- 自动匹配推荐 -->
+      <div class="result-section" id="autoMatchSection" style="display:none;">
+        <h3 class="section-title">电机自动匹配推荐</h3>
+        <div class="match-results" id="matchResults"></div>
+      </div>
+
       <!-- 图表 -->
       <div class="result-section chart-section">
         <h3 class="section-title">曲线图</h3>
@@ -199,8 +213,8 @@
   </footer>
 
   <script src="js/chart.umd.min.js"></script>
-  <script src="js/calculator.js?v=23"></script>
+  <script src="js/calculator.js?v=24"></script>
   <script src="js/chart.js?v=20"></script>
-  <script src="js/ui.js?v=30"></script>
+  <script src="js/ui.js?v=31"></script>
 </body>
 </html>

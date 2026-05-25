@@ -328,6 +328,52 @@ const Calculator = {
   },
 
   /**
+   * 自动匹配推荐电机
+   * @param {number} Frms - 需求的 RMS 推力
+   * @param {number} Fpeak - 需求的峰值推力
+   * @param {string} [category] - 可选分类过滤 (map/mai/lmc)
+   * @returns {{ top: Array, others: Array, all: Array }}
+   */
+  autoMatchMotors(Frms, Fpeak, category) {
+    const all = [];
+
+    Object.entries(this.MOTORS).forEach(([key, motor]) => {
+      if (key === 'custom' || !motor.Fcont || !motor.Fpeak) return;
+      if (category && !key.startsWith(category)) return;
+
+      const rmsMargin = motor.Fcont / Frms;
+      const peakMargin = motor.Fpeak / Fpeak;
+      const score = Math.min(rmsMargin, peakMargin); // 短板决定评分
+
+      all.push({
+        key,
+        name: motor.name,
+        Fcont: motor.Fcont,
+        Fpeak: motor.Fpeak,
+        rmsMargin,
+        peakMargin,
+        score,
+        rmsPass: rmsMargin >= 1,
+        peakPass: peakMargin >= 1,
+        coilMass: motor.coilMass,
+        Kf: motor.Kf,
+        Icont: motor.Icont,
+        Ipeak: motor.Ipeak,
+        Fmag: motor.Fmag,
+      });
+    });
+
+    // 按评分降序排列
+    all.sort((a, b) => b.score - a.score);
+
+    return {
+      top: all.filter(m => m.score >= 1),
+      others: all.filter(m => m.score < 1),
+      all,
+    };
+  },
+
+  /**
    * 执行完整计算
    * @param {Object} params
    * @returns {Object} 计算结果
