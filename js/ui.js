@@ -89,13 +89,13 @@ const UI = {
       return;
     }
 
-    // 第1步：推导缺失的运动参数
+    // 第1步：推导缺失的运动参数（传入上次推导的字段，用于处理 4 值不一致）
     const derived = Calculator.deriveMissingParam({
       S: read('stroke'),
       Vmax: read('maxVelocity'),
       a: read('acceleration'),
       t_run: read('motionTime'),
-    });
+    }, this._lastDerivedKeys);
     if (derived.error) {
       alert(derived.error);
       return;
