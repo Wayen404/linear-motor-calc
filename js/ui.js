@@ -99,6 +99,11 @@ const UI = {
       document.getElementById('frictionCoeff').focus();
       return;
     }
+    if (document.getElementById('motorCategory').value === '') {
+      alert('请选择电机分类');
+      document.getElementById('motorCategory').focus();
+      return;
+    }
 
     // 第1步：构建推导输入，清除旧推导值
     const rawInput = {
@@ -150,7 +155,7 @@ const UI = {
       frictionCoeff: g('frictionCoeff'),
       inclineAngle: g('inclineAngle'),
       externalForce: g('externalForce'),
-    }, document.getElementById('motorCategory').value === 'all' ? null : document.getElementById('motorCategory').value);
+    }, document.getElementById('motorCategory').value || null);
     this._selectedMotor = null;
     const best = matched.safe.length > 0 ? matched.safe[0]
                : matched.warn.length > 0 ? matched.warn[0]
@@ -336,7 +341,7 @@ const UI = {
 
     // 按分类筛选
     const category = document.getElementById('motorCategory').value;
-    const catFilter = category !== 'all' ? category : null;
+    const catFilter = category || null;
     const matched = Calculator.autoMatchMotors(profile, load, catFilter);
 
     if (!matched.safe.length && !matched.warn.length) {

@@ -12,7 +12,7 @@
   <link rel="apple-touch-icon" href="icons/icon-152.png">
   <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
-  <link rel="stylesheet" href="css/style.css?v=31">
+  <link rel="stylesheet" href="css/style.css?v=32">
 </head>
 <body>
   <header class="header">
@@ -72,14 +72,14 @@
       <h2 class="panel-title">负载参数 <span class="hint">根据实际工况填写</span></h2>
       <div class="params-grid" id="loadParams">
         <div class="param-group">
-          <label class="param-label">负载质量 M</label>
+          <label class="param-label">负载质量 M <span class="required">*</span></label>
           <div class="input-wrapper">
             <input type="number" id="loadMass" class="param-input" placeholder="建议 1~100" step="0.5" min="0">
             <span class="unit">kg</span>
           </div>
         </div>
         <div class="param-group">
-          <label class="param-label">摩擦系数 μ</label>
+          <label class="param-label">摩擦系数 μ <span class="required">*</span></label>
           <div class="input-wrapper">
             <input type="number" id="frictionCoeff" class="param-input" placeholder="直线导轨≈0.01" step="0.005" min="0">
             <span class="unit">—</span>
@@ -101,10 +101,10 @@
         </div>
       </div>
 
-      <h2 class="panel-title">电机选型 <span class="hint">选择分类后自动匹配合适电机</span></h2>
+      <h2 class="panel-title">电机选型</h2>
       <div class="params-grid" id="motorSelectors">
         <div class="param-group" style="grid-column: 1 / -1;">
-          <label class="param-label">品牌</label>
+          <label class="param-label">品牌 <span class="required">*</span></label>
           <div class="input-wrapper">
             <select id="motorBrand" class="motor-select">
               <option value="inovance">汇川 (Inovance)</option>
@@ -112,10 +112,10 @@
           </div>
         </div>
         <div class="param-group" style="grid-column: 1 / -1;">
-          <label class="param-label">分类筛选</label>
+          <label class="param-label">分类筛选 <span class="required">*</span></label>
           <div class="input-wrapper">
             <select id="motorCategory" class="motor-select">
-              <option value="all">全部</option>
+              <option value="">请选择电机分类</option>
               <option value="map">有铁芯（MAP 系列）</option>
               <option value="mai">无铁芯（MAI 系列）</option>
               <option value="lmc">直线模组（LMC 系列）</option>

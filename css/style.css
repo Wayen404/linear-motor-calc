@@ -223,6 +223,10 @@ body {
   font-weight: 500;
   color: var(--text-secondary);
 }
+.required {
+  color: #d93025;
+  font-weight: 700;
+}
 
 .param-label sub {
   font-size: 0.7rem;
