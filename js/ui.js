@@ -16,6 +16,10 @@ const UI = {
   /** 上一次推导的字段 key 列表 */
   _lastDerivedKeys: [],
 
+  /** 上一次推导时的 S 和 t_run（用于判断用户是否改了它们） */
+  _lastS: undefined,
+  _lastT_run: undefined,
+
   /** 用户最后修改的运动参数字段 */
   _lastChangedField: null,
 
@@ -96,43 +100,28 @@ const UI = {
       return;
     }
 
-    // 第1步：根据用户最后修改的字段构建推导输入
-    const rawInput = {
-      S: read('stroke'),
-      Vmax: read('maxVelocity'),
-      a: read('acceleration'),
-      t_run: read('motionTime'),
-    };
-
-    // 构建推导输入
+    // 第1步：构建推导输入，清除旧推导值
     const rawInput = {
       S: read('stroke'), Vmax: read('maxVelocity'),
       a: read('acceleration'), t_run: read('motionTime'),
     };
 
-    // 检查之前推导的字段：如果 DOM 值与 S+t_run 推导值一致 → 没改过 → 清除重新推导
-    // 如果 DOM 值与推导值不一致 → 用户手动修改了 → 保留
-    if (this._lastDerivedKeys.length > 0 && read('stroke') && read('motionTime')) {
-      const S_val = parseFloat(read('stroke'));
-      const t_run_val = parseFloat(read('motionTime'));
-      if (S_val > 0 && t_run_val > 0) {
-        const baseVmax = 3 * S_val / (2 * t_run_val);
-        const baseA = 9 * S_val / (2 * t_run_val * t_run_val);
-        if (baseVmax > 0 && baseA > 0) {
-          this._lastDerivedKeys.forEach(key => {
-            if (key === 'Vmax') {
-              const domV = parseFloat(read('maxVelocity'));
-              if (domV > 0 && Math.abs(domV - baseVmax) / baseVmax < 0.01) {
-                rawInput.Vmax = '';
-              }
-            } else if (key === 'a') {
-              const domA = parseFloat(read('acceleration'));
-              if (domA > 0 && Math.abs(domA - baseA) / baseA < 0.01) {
-                rawInput.a = '';
-              }
-            }
-          });
-        }
+    if (this._lastDerivedKeys.length > 0) {
+      const curS = g('stroke');
+      const curT = g('motionTime');
+      const sChanged = this._lastS !== undefined && Math.abs(curS - this._lastS) > 0.0001;
+      const tChanged = this._lastT_run !== undefined && Math.abs(curT - this._lastT_run) > 0.0001;
+
+      if (sChanged || tChanged) {
+        if (this._lastDerivedKeys.includes('Vmax')) rawInput.Vmax = '';
+        if (this._lastDerivedKeys.includes('a')) rawInput.a = '';
+      } else {
+        const changed = this._lastChangedField;
+        if (changed === 'Vmax' && this._lastDerivedKeys.includes('a')) rawInput.a = '';
+        else if (changed === 'a' && this._lastDerivedKeys.includes('Vmax')) rawInput.Vmax = '';
+      }
+    }
+    this._lastChangedField = null;
       }
     }
 
@@ -150,6 +139,8 @@ const UI = {
     });
     this.clearDerivedStyles();
     this.markDerived(derived.derivedKeys);
+    this._lastS = g('stroke');
+    this._lastT_run = g('motionTime');
 
     // 第2步：自动选择最佳电机
     const tDwell = g('dwellTime');
