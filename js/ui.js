@@ -105,16 +105,14 @@ const UI = {
     };
 
     // 根据 _lastChangedField 决定哪些字段需要重新推导
+    // 只清除 _lastDerivedKeys 中包含的字段，用户手动设置过的保留
     if (this._lastChangedField === 't_run' || this._lastChangedField === 'S') {
-      // 改了 t_run 或 S → 清掉 Vmax、a，按 S+t_run 重新 1/3-1/3-1/3 分配
-      rawInput.Vmax = '';
-      rawInput.a = '';
+      if (this._lastDerivedKeys.includes('Vmax')) rawInput.Vmax = '';
+      if (this._lastDerivedKeys.includes('a')) rawInput.a = '';
     } else if (this._lastChangedField === 'Vmax') {
-      // 改了 Vmax → 清掉 a，从 S+Vmax+t_run 推导 a
-      rawInput.a = '';
+      if (this._lastDerivedKeys.includes('a')) rawInput.a = '';
     } else if (this._lastChangedField === 'a') {
-      // 改了 a → 清掉 Vmax，从 S+a+t_run 推导 Vmax
-      rawInput.Vmax = '';
+      if (this._lastDerivedKeys.includes('Vmax')) rawInput.Vmax = '';
     }
     this._lastChangedField = null;
 
