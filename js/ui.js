@@ -16,6 +16,9 @@ const UI = {
   /** 上一次推导的字段 key 列表 */
   _lastDerivedKeys: [],
 
+  /** 用户最后修改的运动参数字段 */
+  _lastChangedField: null,
+
   init() {
     document.getElementById('calcBtn').addEventListener('click', () => this.calculate());
     document.querySelectorAll('.param-input').forEach(el => {
@@ -26,7 +29,11 @@ const UI = {
         if (el.classList.contains('motion-param')) this.clearDerivedStyles();
       });
       el.addEventListener('input', () => {
-        if (el.classList.contains('motion-param')) this.clearDerivedStyles();
+        if (el.classList.contains('motion-param')) {
+          this.clearDerivedStyles();
+          const field = this.motionFields.find(f => f.id === el.id);
+          if (field) this._lastChangedField = field.key;
+        }
       });
     });
 
@@ -89,13 +96,29 @@ const UI = {
       return;
     }
 
-    // 第1步：推导缺失的运动参数（传入上次推导的字段，用于处理 4 值不一致）
-    const derived = Calculator.deriveMissingParam({
+    // 第1步：根据用户最后修改的字段构建推导输入
+    const rawInput = {
       S: read('stroke'),
       Vmax: read('maxVelocity'),
       a: read('acceleration'),
       t_run: read('motionTime'),
-    }, this._lastDerivedKeys);
+    };
+
+    // 根据 _lastChangedField 决定哪些字段需要重新推导
+    if (this._lastChangedField === 't_run' || this._lastChangedField === 'S') {
+      // 改了 t_run 或 S → 清掉 Vmax、a，按 S+t_run 重新 1/3-1/3-1/3 分配
+      rawInput.Vmax = '';
+      rawInput.a = '';
+    } else if (this._lastChangedField === 'Vmax') {
+      // 改了 Vmax → 清掉 a，从 S+Vmax+t_run 推导 a
+      rawInput.a = '';
+    } else if (this._lastChangedField === 'a') {
+      // 改了 a → 清掉 Vmax，从 S+a+t_run 推导 Vmax
+      rawInput.Vmax = '';
+    }
+    this._lastChangedField = null;
+
+    const derived = Calculator.deriveMissingParam(rawInput);
     if (derived.error) {
       alert(derived.error);
       return;

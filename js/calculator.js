@@ -126,10 +126,9 @@ const Calculator = {
   /**
    * 从用户输入的运动参数自动推导缺失值
    * @param {Object} raw - { S, Vmax, a, t_run }，缺失值为 null/0/undefined/''
-   * @param {string[]} [previouslyDerived] - 上次推导的字段 key 列表（用于 4 值不一致时判断）
    * @returns {{ S, Vmax, a, t_run, derivedKeys: string[], error: string|null }}
    */
-  deriveMissingParam(raw, previouslyDerived) {
+  deriveMissingParam(raw) {
     const has = (v) => v !== null && v !== undefined && v !== '' && Number(v) > 0;
     const d = {};
     if (has(raw.S)) d.S = Number(raw.S);
@@ -153,34 +152,8 @@ const Calculator = {
       return { error: hint };
     }
 
-    // 4 个全填了 → 检查是否有之前推导的字段需要重新推导
+    // 4 个全填了 → 直接用
     if (keys.length === 4) {
-      if (previouslyDerived && previouslyDerived.length > 0) {
-        // 有之前推导的字段：用非推导字段做基准（通常是 S + t_run）
-        const baseInput = {};
-        ['S', 'Vmax', 'a', 't_run'].forEach(k => {
-          if (!previouslyDerived.includes(k) && d[k] !== undefined) {
-            baseInput[k] = String(d[k]);
-          }
-        });
-        if (Object.keys(baseInput).length >= 2) {
-          const baseResult = this.deriveMissingParam(baseInput);
-          if (!baseResult.error) {
-            // 比对：如果之前推导的字段值和基准计算结果一致 → 没改过 → 清除重新推导
-            // 如果不一致 → 用户手动修改了 → 保留该值
-            previouslyDerived.forEach(k => {
-              const current = d[k];
-              const expected = baseResult[k];
-              if (current !== undefined && expected !== undefined &&
-                  Math.abs(current - expected) / Math.max(expected, 1e-10) > 0.005) {
-                baseInput[k] = String(current); // 用户修改过，保留
-              }
-            });
-            const result = this.deriveMissingParam(baseInput);
-            if (!result.error) return result;
-          }
-        }
-      }
       return { ...d, derivedKeys: [], error: null };
     }
 
