@@ -104,17 +104,37 @@ const UI = {
       t_run: read('motionTime'),
     };
 
-    // 根据 _lastChangedField 决定哪些字段需要重新推导
-    // 只清除 _lastDerivedKeys 中包含的字段，用户手动设置过的保留
-    if (this._lastChangedField === 't_run' || this._lastChangedField === 'S') {
-      if (this._lastDerivedKeys.includes('Vmax')) rawInput.Vmax = '';
-      if (this._lastDerivedKeys.includes('a')) rawInput.a = '';
-    } else if (this._lastChangedField === 'Vmax') {
-      if (this._lastDerivedKeys.includes('a')) rawInput.a = '';
-    } else if (this._lastChangedField === 'a') {
-      if (this._lastDerivedKeys.includes('Vmax')) rawInput.Vmax = '';
+    // 构建推导输入
+    const rawInput = {
+      S: read('stroke'), Vmax: read('maxVelocity'),
+      a: read('acceleration'), t_run: read('motionTime'),
+    };
+
+    // 检查之前推导的字段：如果 DOM 值与 S+t_run 推导值一致 → 没改过 → 清除重新推导
+    // 如果 DOM 值与推导值不一致 → 用户手动修改了 → 保留
+    if (this._lastDerivedKeys.length > 0 && read('stroke') && read('motionTime')) {
+      const S_val = parseFloat(read('stroke'));
+      const t_run_val = parseFloat(read('motionTime'));
+      if (S_val > 0 && t_run_val > 0) {
+        const baseVmax = 3 * S_val / (2 * t_run_val);
+        const baseA = 9 * S_val / (2 * t_run_val * t_run_val);
+        if (baseVmax > 0 && baseA > 0) {
+          this._lastDerivedKeys.forEach(key => {
+            if (key === 'Vmax') {
+              const domV = parseFloat(read('maxVelocity'));
+              if (domV > 0 && Math.abs(domV - baseVmax) / baseVmax < 0.01) {
+                rawInput.Vmax = '';
+              }
+            } else if (key === 'a') {
+              const domA = parseFloat(read('acceleration'));
+              if (domA > 0 && Math.abs(domA - baseA) / baseA < 0.01) {
+                rawInput.a = '';
+              }
+            }
+          });
+        }
+      }
     }
-    this._lastChangedField = null;
 
     const derived = Calculator.deriveMissingParam(rawInput);
     if (derived.error) {
