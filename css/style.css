@@ -600,7 +600,7 @@ body {
 @media (max-width: 480px) {
   .header h1 { font-size: 1rem; }
   .header { padding: 10px 12px; }
-  .subtitle { display: none; }
+  .subtitle { font-size: 0.65rem; }
   @supports (padding: env(safe-area-inset-top)) {
     .header {
       padding-top: calc(10px + env(safe-area-inset-top));
