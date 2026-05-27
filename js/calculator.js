@@ -152,8 +152,20 @@ const Calculator = {
       return { error: hint };
     }
 
-    // 4 个全填了，直接使用
+    // 4 个全填了 → 检查一致性，若 t_run 与 S+Vmax+a 计算的偏差大则重新推导 t_run
     if (keys.length === 4) {
+      const S_min = d.Vmax * d.Vmax / d.a;
+      let expected_t_run;
+      if (d.S >= S_min) {
+        expected_t_run = d.Vmax / d.a + d.S / d.Vmax; // 梯形
+      } else {
+        expected_t_run = 2 * Math.sqrt(d.S / d.a);    // 三角形
+      }
+      // 偏差超过 1% 则重新推导 t_run
+      if (Math.abs(expected_t_run - d.t_run) / Math.max(expected_t_run, 1e-10) > 0.01) {
+        d.t_run = expected_t_run;
+        return { ...d, derivedKeys: ['t_run'], error: null };
+      }
       return { ...d, derivedKeys: [], error: null };
     }
 

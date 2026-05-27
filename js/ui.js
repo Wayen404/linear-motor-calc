@@ -26,11 +26,7 @@ const UI = {
         if (el.classList.contains('motion-param')) this.clearDerivedStyles();
       });
       el.addEventListener('input', () => {
-        if (el.classList.contains('motion-param') && this._lastDerivedKeys.length > 0) {
-          const field = this.motionFields.find(f => f.id === el.id);
-          const isDerivedField = field && this._lastDerivedKeys.includes(field.key);
-          this.clearDerivedValues(isDerivedField ? field.key : undefined);
-        }
+        if (el.classList.contains('motion-param')) this.clearDerivedStyles();
       });
     });
 
@@ -55,17 +51,6 @@ const UI = {
       const badge = el?.parentElement?.querySelector('.derived-badge');
       if (badge) badge.remove();
     });
-  },
-
-  /** 清除之前推导字段的值 */
-  clearDerivedValues(skipKey) {
-    if (this._lastDerivedKeys.length === 0) return;
-    this.motionFields.forEach(({ id, key }) => {
-      if (this._lastDerivedKeys.includes(key) && key !== skipKey) {
-        document.getElementById(id).value = '';
-      }
-    });
-    this._lastDerivedKeys = [];
   },
 
   /** 在推导的字段上显示黄色标记 */
