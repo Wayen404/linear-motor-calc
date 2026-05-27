@@ -66,7 +66,9 @@ const UI = {
 
   /** 在推导的字段上显示黄色标记 */
   markDerived(derivedKeys) {
-    this._lastDerivedKeys = derivedKeys || [];
+    if (derivedKeys && derivedKeys.length > 0) {
+      this._lastDerivedKeys = derivedKeys;
+    }
     if (!derivedKeys || derivedKeys.length === 0) return;
     this.motionFields.forEach(({ id, key }) => {
       if (derivedKeys.includes(key)) {
